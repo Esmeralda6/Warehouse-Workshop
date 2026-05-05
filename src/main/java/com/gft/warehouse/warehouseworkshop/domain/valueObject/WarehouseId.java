@@ -9,9 +9,13 @@ public class WarehouseId {
     private final String id;
 
     public WarehouseId(String id) {
+        this.id = validate(id);
+    }
+
+    private String validate(String id){
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("WarehouseId cannot be null or blank");
         }
-        this.id = id;
+        return id;
     }
 }

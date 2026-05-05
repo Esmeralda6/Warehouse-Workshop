@@ -16,11 +16,11 @@ public class Location {
         if (y < 0) {
             throw new IllegalArgumentException("Location y coordinate cannot be negative");
         }
-        if (x > 100) {
-            throw new IllegalArgumentException("Location x cannot be higher than 100");
+        if (x >= 100) {
+            throw new IllegalArgumentException("Location x coordinate cannot be higher than 99");
         }
-        if (y > 100) {
-            throw new IllegalArgumentException("Location y cannot be higher than 100");
+        if (y >= 100) {
+            throw new IllegalArgumentException("Location y coordinate cannot be higher than 99");
         }
         this.x = x;
         this.y = y;

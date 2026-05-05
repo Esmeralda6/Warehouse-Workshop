@@ -43,13 +43,13 @@ class LocationTest {
     void shouldThrowExceptionWhenXIsHigherThanOnehundred(){
         assertThatThrownBy(() -> Location.builder().x(100).y(5).build())
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Location x coordinate cannot be higher than 100");
+                .hasMessage("Location x coordinate cannot be higher than 99");
     }
 
     @Test
     void shouldThrowExceptionWhenYIsHigherThanOnehundred(){
         assertThatThrownBy(() -> Location.builder().x(5).y(100).build())
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Location y coordinate cannot be higher than 100");
+                .hasMessage("Location y coordinate cannot be higher than 99");
     }
 }

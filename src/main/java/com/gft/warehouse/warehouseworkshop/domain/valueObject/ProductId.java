@@ -3,23 +3,21 @@ package com.gft.warehouse.warehouseworkshop.domain.valueObject;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @Builder
 @Getter
 public class ProductId {
-    private final String id;
+    private final UUID id;
 
-    public ProductId(String id) {
+    public ProductId(UUID id) {
 
         this.id = validateProductId(id);
     }
 
-    private String validateProductId (String id){
+    private UUID validateProductId (UUID id){
         if (id == null){
             throw new IllegalArgumentException("The ID of the product can't be empty.");
-        }
-
-        if ( id.isBlank() ){
-            throw new IllegalArgumentException("The ID of the product can't be blank.");
         }
         return id;
     }

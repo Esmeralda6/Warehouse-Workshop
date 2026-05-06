@@ -1,12 +1,14 @@
 package com.gft.warehouse.warehouseworkshop.domain.aggregates;
 
 import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
+import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Builder
 @Getter
@@ -17,13 +19,15 @@ public class Warehouse {
     private final Location warehouseLocation;
     private final Map minimumStockRules;
     private final boolean isStockInfinite;
+    private final FactoryId factoryId;
 
-    public Warehouse(WarehouseId warehouseId, String warehouseName, Type warehouseType, Location warehouseLocation, Map minimumStockRules, boolean isStockInfinite) {
+    public Warehouse(WarehouseId warehouseId, String warehouseName, Type warehouseType, Location warehouseLocation, Map minimumStockRules, boolean isStockInfinite, FactoryId factoryId) {
         this.warehouseId = warehouseId;
         this.warehouseName = warehouseName;
         this.warehouseType = warehouseType;
         this.warehouseLocation = warehouseLocation;
         this.minimumStockRules = minimumStockRules;
         this.isStockInfinite = isStockInfinite;
+        this.factoryId = factoryId;
     }
 }

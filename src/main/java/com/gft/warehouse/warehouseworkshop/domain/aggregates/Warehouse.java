@@ -21,13 +21,5 @@ public class Warehouse {
     private final boolean isStockInfinite;
     private final FactoryId factoryId;
 
-    public Warehouse(WarehouseId warehouseId, String warehouseName, Type warehouseType, Location warehouseLocation, Map minimumStockRules, boolean isStockInfinite, FactoryId factoryId) {
-        this.warehouseId = warehouseId;
-        this.warehouseName = warehouseName;
-        this.warehouseType = warehouseType;
-        this.warehouseLocation = warehouseLocation;
-        this.minimumStockRules = minimumStockRules;
-        this.isStockInfinite = isStockInfinite;
-        this.factoryId = factoryId;
-    }
+
 }

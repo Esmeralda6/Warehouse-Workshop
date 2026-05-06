@@ -9,10 +9,24 @@ import lombok.Getter;
 @Getter
 public class StockItem {
     private final ProductId productId;
-    private final Quantity quantity;
+    private Quantity quantity;
 
-    public StockItem(ProductId productId, Quantity quantity) {
-        this.productId = productId;
-        this.quantity = quantity;
+    public boolean isEnough(Quantity needed) {
+        return this.quantity.getQuantity() >= needed.getQuantity();
+    }
+
+    public void add(Quantity qty) {
+        this.quantity = Quantity.builder().quantity(this.quantity.getQuantity() + qty.getQuantity()).build();
+    }
+
+    public void subtract(Quantity qty) {
+        if (qty.getQuantity() > this.quantity.getQuantity()) {
+            throw new IllegalArgumentException("Not enough stock to subtract");
+        }
+        this.quantity = Quantity.builder().quantity(this.quantity.getQuantity() - qty.getQuantity()).build();
+    }
+
+    public boolean hasProduct(ProductId productId) {
+        return this.productId.getId().equals(productId.getId());
     }
 }

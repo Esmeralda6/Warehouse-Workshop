@@ -2,19 +2,20 @@ package com.gft.warehouse.warehouseworkshop.domain.valueObject;
 
 import lombok.Builder;
 import lombok.Getter;
+import java.util.UUID;
 
 @Builder
 @Getter
 public class WarehouseId {
-    private final String id;
+    private final UUID id;
 
-    public WarehouseId(String id) {
+    public WarehouseId(UUID id) {
         this.id = validate(id);
     }
 
-    private String validate(String id){
-        if (id == null || id.isBlank()) {
-            throw new IllegalArgumentException("WarehouseId cannot be null or blank");
+    private UUID validate(UUID id){
+        if (id == null) {
+            throw new IllegalArgumentException("WarehouseId cannot be null");
         }
         return id;
     }

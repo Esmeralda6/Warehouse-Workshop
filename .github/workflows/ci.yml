@@ -46,7 +46,6 @@ jobs:
           fi
 
           VALID_TYPES="feat|fix|chore|docs|test|refactor"
-          GITHUB_AUTO="^(Merge (branch|pull request|remote-tracking branch)|Revert \") "
           FAILED=0
 
           while IFS= read -r MSG; do
@@ -54,7 +53,7 @@ jobs:
               continue
             fi
             echo "Checking: $MSG"
-            if echo "$MSG" | grep -qE "$GITHUB_AUTO"; then
+            if echo "$MSG" | grep -qE "^Merge |^Revert \""; then
               echo "Skipping auto-generated GitHub commit: $MSG"
               continue
             fi

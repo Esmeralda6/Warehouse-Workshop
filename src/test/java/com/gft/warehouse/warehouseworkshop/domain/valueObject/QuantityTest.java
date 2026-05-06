@@ -3,11 +3,11 @@ package com.gft.warehouse.warehouseworkshop.domain.valueObject;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 class QuantityTest {
+
     @Test
     void generateQuantity(){
         Quantity quantity = Quantity.builder()

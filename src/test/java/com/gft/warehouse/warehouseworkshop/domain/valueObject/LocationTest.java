@@ -1,6 +1,11 @@
 package com.gft.warehouse.warehouseworkshop.domain.valueObject;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -25,31 +30,35 @@ class LocationTest {
         assertThat(location.getY()).isZero();
     }
 
-    @Test
-    void shouldThrowExceptionWhenXIsNegative() {
-        assertThatThrownBy(() -> Location.builder().x(-1).y(5).build())
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Location x coordinate cannot be negative");
+    private static Stream<Arguments> providerWhenIsNegative() {
+        return Stream.of(
+                Arguments.of(-1, 2),
+                Arguments.of(2, -1),
+                Arguments.of(-1, -1)
+        );
     }
 
-    @Test
-    void shouldThrowExceptionWhenYIsNegative() {
-        assertThatThrownBy(() -> Location.builder().x(5).y(-1).build())
+    @ParameterizedTest
+    @MethodSource("providerWhenIsNegative")
+    void shouldThrowExceptionWhenXOrYIsNegative(int x, int y) {
+        assertThatThrownBy(() -> Location.builder().x(x).y(y).build())
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Location y coordinate cannot be negative");
+                .hasMessage("Location coordinate cannot be negative");
     }
 
-    @Test
-    void shouldThrowExceptionWhenXIsHigherThanOnehundred(){
-        assertThatThrownBy(() -> Location.builder().x(100).y(5).build())
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Location x coordinate cannot be higher than 99");
+    private static Stream<Arguments> providerHigherThanNinetyNine(){
+        return Stream.of(
+                Arguments.of(100, 1),
+                Arguments.of(1, 100),
+                Arguments.of(100, 100)
+        );
     }
 
-    @Test
-    void shouldThrowExceptionWhenYIsHigherThanOnehundred(){
-        assertThatThrownBy(() -> Location.builder().x(5).y(100).build())
+    @ParameterizedTest
+    @MethodSource("providerHigherThanNinetyNine")
+    void shouldThrowExceptionWhenXIsHigherThanNinetyNine(int x, int y){
+        assertThatThrownBy(() -> Location.builder().x(x).y(y).build())
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Location y coordinate cannot be higher than 99");
+                .hasMessage("Location coordinate cannot be higher than 99");
     }
 }

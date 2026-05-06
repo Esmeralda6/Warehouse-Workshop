@@ -2,6 +2,8 @@ package com.gft.warehouse.warehouseworkshop.domain.valueObject;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,20 +11,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ProductIdTest {
     @Test
     void generateProductId(){
+        UUID uuid = UUID.randomUUID();
         ProductId productId = ProductId.builder()
-                .id("id_1")
+                .id(uuid)
                 .build();
 
         assertThat(productId).isInstanceOf(ProductId.class).isNotNull();
-        assertThat(productId.getId()).isNotBlank();
-    }
-
-    @Test
-    void shouldThrowExceptionWhenIsEmpty(){
-        assertThatThrownBy(() -> ProductId.builder().id("").build())
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("The ID of the product can't be blank.");
-
     }
 
     @Test

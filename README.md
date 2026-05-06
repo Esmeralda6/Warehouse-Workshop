@@ -1,7 +1,7 @@
 # Warehouses — Bounded Context (Core Domain)
- 
+
 ## Module: warehouse
- 
+
 ```mermaid
 classDiagram
     class Warehouse {
@@ -11,6 +11,7 @@ classDiagram
         +Location location
         +Map minStockRules
         +boolean isStockInfinite
+        +FactoryId id
         +checkOwnStock(items) boolean
         +consumeStock(items) void
         +receiveDelivery(items) void
@@ -28,7 +29,7 @@ classDiagram
     }
     class WarehouseId {
         <<value object>>
-        +String value
+        +UUID value
     }
     class Location {
         <<value object>>
@@ -43,15 +44,20 @@ classDiagram
         <<value object>>
         +String value
     }
+    class FactoryId {
+        <<value object>>
+        +UUID value
+}
     Warehouse "1" --> "1..*" StockItem
     Warehouse --> WarehouseId
     Warehouse --> Location
+    Warehouse --> FactoryId
     StockItem --> ProductId
     StockItem --> Quantity
 ```
- 
+
 ## Module: replenishment
- 
+
 ```mermaid
 classDiagram
     class Warehouse {
@@ -82,9 +88,9 @@ classDiagram
     Warehouse ..> SupplierWarehouseFinder
     SupplierWarehouseFinder --> ReplenishmentRequested
 ```
- 
+
 ## Module: services
- 
+
 ```mermaid
 classDiagram
     class Warehouse {
@@ -108,9 +114,9 @@ classDiagram
     Warehouse ..> ReplenishmentPolicy
     Warehouse ..> SupplierWarehouseFinder
 ```
- 
+
 ## Use cases (Application Layer)
- 
+
 ```mermaid
 classDiagram
     class RegisterWarehouse {
@@ -137,9 +143,9 @@ classDiagram
     ReceiveDelivery --> Warehouse
     DispatchShipment --> Warehouse
 ```
- 
+
 ## Decision logic — production.materials.requested.v1
- 
+
 ```mermaid
 flowchart TD
     START([MaterialsNeeded event received])

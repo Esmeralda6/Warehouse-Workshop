@@ -46,6 +46,7 @@ jobs:
           fi
 
           VALID_TYPES="feat|fix|chore|docs|test|refactor"
+          GITHUB_AUTO="^(Merge (branch|pull request|remote-tracking branch)|Revert \") "
           FAILED=0
 
           while IFS= read -r MSG; do
@@ -53,6 +54,10 @@ jobs:
               continue
             fi
             echo "Checking: $MSG"
+            if echo "$MSG" | grep -qE "$GITHUB_AUTO"; then
+              echo "Skipping auto-generated GitHub commit: $MSG"
+              continue
+            fi
             if ! echo "$MSG" | grep -qE "^($VALID_TYPES): .+"; then
               echo "Invalid commit message: $MSG"
               echo "Expected format: type: description"

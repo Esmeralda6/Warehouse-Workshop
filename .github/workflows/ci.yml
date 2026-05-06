@@ -53,6 +53,10 @@ jobs:
               continue
             fi
             echo "Checking: $MSG"
+            if echo "$MSG" | grep -qE "^Merge |^Revert \""; then
+              echo "Skipping auto-generated GitHub commit: $MSG"
+              continue
+            fi
             if ! echo "$MSG" | grep -qE "^($VALID_TYPES): .+"; then
               echo "Invalid commit message: $MSG"
               echo "Expected format: type: description"

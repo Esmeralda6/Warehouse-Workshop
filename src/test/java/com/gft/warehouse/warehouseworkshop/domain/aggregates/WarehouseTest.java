@@ -78,32 +78,50 @@ class WarehouseTest {
         assertThat(warehouse.isStockInfinite()).isInstanceOf(Boolean.class).isNotNull();
     }
 
-    @Test
-    void checkOwnStock_returnsTrueWhenCheckerReturnsTrue() {
+    private static Stream<Arguments> checkOwnStockCases() {
         UUID productId = UUID.randomUUID();
-        Warehouse warehouse = buildWarehouse(false, new ArrayList<>(List.of(buildItem(productId, 10))));
-        StockChecker checker = (stock, items) -> true;
+        return Stream.of(
+                Arguments.of(
+                        new ArrayList<>(List.of(StockItem.builder()
+                                .productId(ProductId.builder().id(productId).build())
+                                .quantity(Quantity.builder().quantity(10).build()).build())),
+                        List.of(StockItem.builder()
+                                .productId(ProductId.builder().id(productId).build())
+                                .quantity(Quantity.builder().quantity(5).build()).build()),
+                        (StockChecker) (stock, items) -> true,
+                        true
+                ),
+                Arguments.of(
+                        new ArrayList<>(List.of(StockItem.builder()
+                                .productId(ProductId.builder().id(productId).build())
+                                .quantity(Quantity.builder().quantity(3).build()).build())),
+                        List.of(StockItem.builder()
+                                .productId(ProductId.builder().id(productId).build())
+                                .quantity(Quantity.builder().quantity(5).build()).build()),
+                        (StockChecker) (stock, items) -> false,
+                        false
+                )
+        );
+    }
 
-        assertThat(warehouse.checkOwnStock(List.of(buildItem(productId, 5)), checker)).isTrue();
+    @ParameterizedTest
+    @MethodSource("checkOwnStockCases")
+    void checkOwnStock(List<StockItem> stock, List<StockItem> requested, StockChecker checker, boolean expected) {
+        Warehouse warehouse = buildWarehouse(false, stock);
+        assertThat(warehouse.checkOwnStock(requested, checker)).isEqualTo(expected);
     }
 
     @Test
-    void checkOwnStock_returnsFalseWhenCheckerReturnsFalse() {
-        UUID productId = UUID.randomUUID();
-        Warehouse warehouse = buildWarehouse(false, new ArrayList<>(List.of(buildItem(productId, 3))));
-        StockChecker checker = (stock, items) -> false;
-
-        assertThat(warehouse.checkOwnStock(List.of(buildItem(productId, 5)), checker)).isFalse();
-    }
-
-    @Test
-    void consumeStock_reducesQuantityForMatchingItem() {
+    void consumeStock_reducesQuantityAndReturnsConsumedItems() {
         UUID productId = UUID.randomUUID();
         Warehouse warehouse = buildWarehouse(false, new ArrayList<>(List.of(buildItem(productId, 10))));
+        List<StockItem> requested = List.of(buildItem(productId, 4));
 
-        warehouse.consumeStock(List.of(buildItem(productId, 4)));
+        List<StockItem> consumed = warehouse.consumeStock(requested);
 
         assertThat(warehouse.getStock().get(0).getQuantity().getQuantity()).isEqualTo(6);
+        assertThat(consumed).isEqualTo(requested);
+        assertThat(consumed.get(0).getQuantity().getQuantity()).isEqualTo(4);
     }
 
     @Test
@@ -164,12 +182,15 @@ class WarehouseTest {
     }
 
     @Test
-    void dispatchItems_reducesStockLikeConsumeStock() {
+    void dispatchItems_reducesStockAndReturnsDispatchedItems() {
         UUID productId = UUID.randomUUID();
         Warehouse warehouse = buildWarehouse(false, new ArrayList<>(List.of(buildItem(productId, 10))));
+        List<StockItem> requested = List.of(buildItem(productId, 3));
 
-        warehouse.dispatchItems(List.of(buildItem(productId, 3)));
+        List<StockItem> dispatched = warehouse.dispatchItems(requested);
 
         assertThat(warehouse.getStock().get(0).getQuantity().getQuantity()).isEqualTo(7);
+        assertThat(dispatched).isEqualTo(requested);
+        assertThat(dispatched.get(0).getQuantity().getQuantity()).isEqualTo(3);
     }
 }

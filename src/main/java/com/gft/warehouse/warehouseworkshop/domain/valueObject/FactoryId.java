@@ -6,17 +6,19 @@ import java.util.UUID;
 
 @Builder
 @Getter
-public class WarehouseId {
+public class FactoryId {
+
     private final UUID id;
 
-    public WarehouseId(UUID id) {
+    public FactoryId(UUID id) {
         this.id = validate(id);
     }
 
     private UUID validate(UUID id){
         if (id == null) {
-            throw new IllegalArgumentException("WarehouseId cannot be null");
+            throw new IllegalArgumentException("FactoryId cannot be null");
         }
         return id;
     }
+
 }

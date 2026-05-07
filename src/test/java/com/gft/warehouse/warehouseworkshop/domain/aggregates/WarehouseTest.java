@@ -140,7 +140,7 @@ class WarehouseTest {
 
         warehouse.receiveDelivery(List.of(buildItem(productId, 3)));
 
-        assertThat(warehouse.getStock().get(0).getQuantity().getQuantity()).isEqualTo(8);
+        assertThat(warehouse.getStock().getFirst().getQuantity().getQuantity()).isEqualTo(8);
     }
 
     @Test
@@ -151,7 +151,7 @@ class WarehouseTest {
         warehouse.receiveDelivery(List.of(buildItem(newProduct, 10)));
 
         assertThat(warehouse.getStock()).hasSize(1);
-        assertThat(warehouse.getStock().get(0).getQuantity().getQuantity()).isEqualTo(10);
+        assertThat(warehouse.getStock().getFirst().getQuantity().getQuantity()).isEqualTo(10);
     }
 
     @Test

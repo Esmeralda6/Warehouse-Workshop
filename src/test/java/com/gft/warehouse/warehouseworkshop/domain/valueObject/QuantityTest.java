@@ -11,15 +11,15 @@ class QuantityTest {
     @Test
     void generateQuantity(){
         Quantity quantity = Quantity.builder()
-                .quantity(10)
+                .value(10)
                 .build();
 
-        assertThat(quantity.getQuantity()).isGreaterThanOrEqualTo(0);
+        assertThat(quantity.getValue()).isGreaterThanOrEqualTo(0);
     }
 
     @Test
     void shouldThrowExceptionWhenValueIsNegative() {
-        assertThatThrownBy(() -> Quantity.builder().quantity(-1).build())
+        assertThatThrownBy(() -> Quantity.builder().value(-1).build())
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("The quantity can't be negative.");
     }

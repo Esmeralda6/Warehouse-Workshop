@@ -1,11 +1,17 @@
 package com.gft.warehouse.warehouseworkshop.domain.aggregates;
 
 import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
+import com.gft.warehouse.warehouseworkshop.domain.services.ReplenishmentPolicy;
+import com.gft.warehouse.warehouseworkshop.domain.services.StockChecker;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Builder
 @Getter
@@ -17,6 +23,41 @@ public class Warehouse {
     private final boolean isStockInfinite;
     private final FactoryId factoryId;
 
-    //private List<StockItemId>
+    @Builder.Default
+    private List<StockItem> stock = new ArrayList<>();
 
+    public boolean checkOwnStock(List<StockItem> items, StockChecker checker) {
+        return checker.checkOwnStock(this.stock, items);
+    }
+
+    public List<StockItem> consumeStock(List<StockItem> items) {
+        items.forEach(requested ->
+                stock.stream()
+                        .filter(s -> s.hasProduct(requested.getProductId()))
+                        .findFirst()
+                        .ifPresent(s -> s.subtract(requested.getQuantity()))
+        );
+        return items;
+    }
+
+    public void receiveDelivery(List<StockItem> items) {
+        items.forEach(delivered ->
+                stock.stream()
+                        .filter(s -> s.hasProduct(delivered.getProductId()))
+                        .findFirst()
+                        .ifPresentOrElse(
+                                s -> s.add(delivered.getQuantity()),
+                                () -> stock.add(delivered)
+                        )
+        );
+    }
+
+    public boolean needsReplenishment(ReplenishmentPolicy policy) {
+        if (isStockInfinite) return false;
+        return policy.shouldReplenish(this.stock, this.minimumStockRules);
+    }
+
+    public List<StockItem> dispatchItems(List<StockItem> items) {
+        return consumeStock(items);
+    }
 }

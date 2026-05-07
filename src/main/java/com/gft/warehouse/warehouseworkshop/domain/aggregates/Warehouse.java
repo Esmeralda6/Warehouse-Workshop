@@ -52,11 +52,6 @@ public class Warehouse {
         );
     }
 
-    public boolean needsReplenishment(ReplenishmentPolicy policy) {
-        if (isStockInfinite) return false;
-        return policy.shouldReplenish(this.stock, this.minimumStockRules);
-    }
-
     public List<StockItem> dispatchItems(List<StockItem> items) {
         return consumeStock(items);
     }

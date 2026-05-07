@@ -14,6 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,6 @@ class WarehouseTest {
                 .warehouseName("Warehouse_1")
                 .warehouseType(Type.PRODUCTION)
                 .warehouseLocation(Location.builder().x(1).y(1).build())
-                .minimumStockRules(Map.of(1, 100))
                 .isStockInfinite(isStockInfinite)
                 .stock(stock)
                 .build();
@@ -49,18 +49,16 @@ class WarehouseTest {
                 Arguments.of(Warehouse.builder()
                         .warehouseId(WarehouseId.builder().id(UUID.randomUUID()).build())
                         .warehouseName("Warehouse_1")
-                        .warehouseType(Type.PRODUCTION)
-                        .warehouseLocation(Location.builder().x(1).y(1).build())
-                        .minimumStockRules(Map.of(1, 100))
+                        .warehouseType( Type.PRODUCTION )
+                        .warehouseLocation( Location.builder().x(1).y(1).build())
                         .isStockInfinite(true)
                         .factoryId(FactoryId.builder().id(UUID.randomUUID()).build())
                         .build()),
                 Arguments.of(Warehouse.builder()
                         .warehouseId(WarehouseId.builder().id(UUID.randomUUID()).build())
                         .warehouseName("Warehouse_1")
-                        .warehouseType(Type.PRODUCTION)
-                        .warehouseLocation(Location.builder().x(1).y(1).build())
-                        .minimumStockRules(Map.of(1, 100))
+                        .warehouseType( Type.PRODUCTION )
+                        .warehouseLocation( Location.builder().x(1).y(1).build())
                         .isStockInfinite(true)
                         .build())
         );
@@ -74,7 +72,6 @@ class WarehouseTest {
         assertThat(warehouse.getWarehouseName()).isInstanceOf(String.class).isNotNull();
         assertThat(warehouse.getWarehouseType()).isInstanceOf(Type.class).isNotNull();
         assertThat(warehouse.getWarehouseLocation()).isInstanceOf(Location.class).isNotNull();
-        assertThat(warehouse.getMinimumStockRules()).isInstanceOf(Map.class).isNotNull();
         assertThat(warehouse.isStockInfinite()).isInstanceOf(Boolean.class).isNotNull();
     }
 
@@ -152,33 +149,6 @@ class WarehouseTest {
 
         assertThat(warehouse.getStock()).hasSize(1);
         assertThat(warehouse.getStock().get(0).getQuantity().getValue()).isEqualTo(10);
-    }
-
-    @Test
-    void needsReplenishment_returnsFalseWhenStockIsInfiniteRegardlessOfPolicy() {
-        UUID productId = UUID.randomUUID();
-        Warehouse warehouse = buildWarehouse(true, new ArrayList<>(List.of(buildItem(productId, 0))));
-        ReplenishmentPolicy alwaysReplenish = (stock, rules) -> true;
-
-        assertThat(warehouse.needsReplenishment(alwaysReplenish)).isFalse();
-    }
-
-    @Test
-    void needsReplenishment_returnsTrueWhenPolicySaysReplenish() {
-        UUID productId = UUID.randomUUID();
-        Warehouse warehouse = buildWarehouse(false, new ArrayList<>(List.of(buildItem(productId, 0))));
-        ReplenishmentPolicy alwaysReplenish = (stock, rules) -> true;
-
-        assertThat(warehouse.needsReplenishment(alwaysReplenish)).isTrue();
-    }
-
-    @Test
-    void needsReplenishment_returnsFalseWhenPolicySaysNoReplenishment() {
-        UUID productId = UUID.randomUUID();
-        Warehouse warehouse = buildWarehouse(false, new ArrayList<>(List.of(buildItem(productId, 5))));
-        ReplenishmentPolicy neverReplenish = (stock, rules) -> false;
-
-        assertThat(warehouse.needsReplenishment(neverReplenish)).isFalse();
     }
 
     @Test

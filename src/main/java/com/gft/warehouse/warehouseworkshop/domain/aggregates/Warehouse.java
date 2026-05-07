@@ -20,7 +20,6 @@ public class Warehouse {
     private final String warehouseName;
     private final Type warehouseType;
     private final Location warehouseLocation;
-    private final Map minimumStockRules;
     private final boolean isStockInfinite;
     private final FactoryId factoryId;
 
@@ -51,11 +50,6 @@ public class Warehouse {
                                 () -> stock.add(delivered)
                         )
         );
-    }
-
-    public boolean needsReplenishment(ReplenishmentPolicy policy) {
-        if (isStockInfinite) return false;
-        return policy.shouldReplenish(this.stock, this.minimumStockRules);
     }
 
     public List<StockItem> dispatchItems(List<StockItem> items) {

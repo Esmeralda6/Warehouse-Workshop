@@ -13,18 +13,18 @@ public class StockItem {
     private Quantity quantity;
 
     public boolean isEnough(Quantity needed) {
-        return this.quantity.getQuantity() >= needed.getQuantity();
+        return this.quantity.getValue() >= needed.getValue();
     }
 
     public void add(Quantity qty) {
-        this.quantity = Quantity.builder().quantity(this.quantity.getQuantity() + qty.getQuantity()).build();
+        this.quantity = Quantity.builder().value(this.quantity.getValue() + qty.getValue()).build();
     }
 
     public void subtract(Quantity qty) {
-        if (qty.getQuantity() > this.quantity.getQuantity()) {
+        if (qty.getValue() > this.quantity.getValue()) {
             throw new InsuficientStockException("Not enough stock to subtract");
         }
-        this.quantity = Quantity.builder().quantity(this.quantity.getQuantity() - qty.getQuantity()).build();
+        this.quantity = Quantity.builder().value(this.quantity.getValue() - qty.getValue()).build();
     }
 
     public boolean hasProduct(ProductId productId) {

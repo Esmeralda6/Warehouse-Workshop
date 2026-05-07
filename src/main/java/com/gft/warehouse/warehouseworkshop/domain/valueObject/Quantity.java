@@ -6,16 +6,16 @@ import lombok.Getter;
 @Builder
 @Getter
 public class Quantity {
-    private final int quantity;
+    private final int value;
 
-    public Quantity(int quantity) {
-        this.quantity = validateQuantity(quantity);
+    public Quantity(int value) {
+        this.value = validateQuantity(value);
     }
 
-    private int validateQuantity(int quantity){
-        if (quantity < 0){
+    private int validateQuantity(int value){
+        if (value < 0){
             throw new IllegalArgumentException("The quantity can't be negative.");
         }
-        return quantity;
+        return value;
     }
 }

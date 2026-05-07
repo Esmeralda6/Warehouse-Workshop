@@ -1,8 +1,6 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository;
 
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
-import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
-import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
@@ -16,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 

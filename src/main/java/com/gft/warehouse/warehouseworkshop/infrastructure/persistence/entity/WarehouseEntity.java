@@ -1,15 +1,12 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity;
 
 import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
-import com.gft.warehouse.warehouseworkshop.domain.valueObject.ProductId;
-import com.gft.warehouse.warehouseworkshop.domain.valueObject.Quantity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Entity

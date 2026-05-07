@@ -7,9 +7,6 @@ import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.Map;
-import java.util.UUID;
-
 @Builder
 @Getter
 public class Warehouse {

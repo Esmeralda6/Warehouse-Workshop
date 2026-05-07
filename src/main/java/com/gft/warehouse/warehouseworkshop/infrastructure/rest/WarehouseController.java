@@ -1,16 +1,13 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.rest;
 
-import com.gft.warehouse.warehouseworkshop.application.dto.LocationDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import com.gft.warehouse.warehouseworkshop.application.service.WarehouseService;
-import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/warehouses")
@@ -31,7 +28,6 @@ public class WarehouseController {
     public Optional<WarehouseDTO> getWarehouseById(
             @PathVariable String id
     ){
-        Optional<WarehouseDTO> warehouseById = warehouseService.getWarehouseById(id);
         return warehouseService.getWarehouseById(id) ;
     }
 

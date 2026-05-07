@@ -6,7 +6,6 @@ import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
 import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
-import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,7 +20,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 

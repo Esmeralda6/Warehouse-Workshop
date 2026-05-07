@@ -1,5 +1,6 @@
 package com.gft.warehouse.warehouseworkshop.domain.aggregates;
 
+import com.gft.warehouse.warehouseworkshop.domain.exceptions.InsuficientStockException;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.ProductId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Quantity;
 import org.junit.jupiter.api.Test;
@@ -57,7 +58,7 @@ class StockItemTest {
     @Test
     void subtract_throwsWhenNotEnoughStock() {
         StockItem item = buildItem(UUID.randomUUID(), 2);
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InsuficientStockException.class,
                 () -> item.subtract(Quantity.builder().quantity(5).build()));
     }
 

@@ -31,13 +31,14 @@ public class Warehouse {
         return checker.checkOwnStock(this.stock, items);
     }
 
-    public void consumeStock(List<StockItem> items) {
+    public List<StockItem> consumeStock(List<StockItem> items) {
         items.forEach(requested ->
                 stock.stream()
                         .filter(s -> s.hasProduct(requested.getProductId()))
                         .findFirst()
                         .ifPresent(s -> s.subtract(requested.getQuantity()))
         );
+        return items;
     }
 
     public void receiveDelivery(List<StockItem> items) {
@@ -57,7 +58,7 @@ public class Warehouse {
         return policy.shouldReplenish(this.stock, this.minimumStockRules);
     }
 
-    public void dispatchItems(List<StockItem> items) {
-        consumeStock(items);
+    public List<StockItem> dispatchItems(List<StockItem> items) {
+        return consumeStock(items);
     }
 }

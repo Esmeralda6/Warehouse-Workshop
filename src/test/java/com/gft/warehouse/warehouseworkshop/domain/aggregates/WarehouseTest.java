@@ -28,7 +28,7 @@ class WarehouseTest {
     private StockItem buildItem(UUID uuid, int qty) {
         return StockItem.builder()
                 .productId(ProductId.builder().id(uuid).build())
-                .quantity(Quantity.builder().quantity(qty).build())
+                .quantity(Quantity.builder().value(qty).build())
                 .build();
     }
 
@@ -84,20 +84,20 @@ class WarehouseTest {
                 Arguments.of(
                         new ArrayList<>(List.of(StockItem.builder()
                                 .productId(ProductId.builder().id(productId).build())
-                                .quantity(Quantity.builder().quantity(10).build()).build())),
+                                .quantity(Quantity.builder().value(10).build()).build())),
                         List.of(StockItem.builder()
                                 .productId(ProductId.builder().id(productId).build())
-                                .quantity(Quantity.builder().quantity(5).build()).build()),
+                                .quantity(Quantity.builder().value(5).build()).build()),
                         (StockChecker) (stock, items) -> true,
                         true
                 ),
                 Arguments.of(
                         new ArrayList<>(List.of(StockItem.builder()
                                 .productId(ProductId.builder().id(productId).build())
-                                .quantity(Quantity.builder().quantity(3).build()).build())),
+                                .quantity(Quantity.builder().value(3).build()).build())),
                         List.of(StockItem.builder()
                                 .productId(ProductId.builder().id(productId).build())
-                                .quantity(Quantity.builder().quantity(5).build()).build()),
+                                .quantity(Quantity.builder().value(5).build()).build()),
                         (StockChecker) (stock, items) -> false,
                         false
                 )
@@ -119,9 +119,9 @@ class WarehouseTest {
 
         List<StockItem> consumed = warehouse.consumeStock(requested);
 
-        assertThat(warehouse.getStock().get(0).getQuantity().getQuantity()).isEqualTo(6);
+        assertThat(warehouse.getStock().get(0).getQuantity().getValue()).isEqualTo(6);
         assertThat(consumed).isEqualTo(requested);
-        assertThat(consumed.get(0).getQuantity().getQuantity()).isEqualTo(4);
+        assertThat(consumed.get(0).getQuantity().getValue()).isEqualTo(4);
     }
 
     @Test
@@ -140,7 +140,7 @@ class WarehouseTest {
 
         warehouse.receiveDelivery(List.of(buildItem(productId, 3)));
 
-        assertThat(warehouse.getStock().getFirst().getQuantity().getQuantity()).isEqualTo(8);
+        assertThat(warehouse.getStock().get(0).getQuantity().getValue()).isEqualTo(8);
     }
 
     @Test
@@ -151,7 +151,7 @@ class WarehouseTest {
         warehouse.receiveDelivery(List.of(buildItem(newProduct, 10)));
 
         assertThat(warehouse.getStock()).hasSize(1);
-        assertThat(warehouse.getStock().getFirst().getQuantity().getQuantity()).isEqualTo(10);
+        assertThat(warehouse.getStock().get(0).getQuantity().getValue()).isEqualTo(10);
     }
 
     @Test
@@ -189,8 +189,8 @@ class WarehouseTest {
 
         List<StockItem> dispatched = warehouse.dispatchItems(requested);
 
-        assertThat(warehouse.getStock().get(0).getQuantity().getQuantity()).isEqualTo(7);
+        assertThat(warehouse.getStock().get(0).getQuantity().getValue()).isEqualTo(7);
         assertThat(dispatched).isEqualTo(requested);
-        assertThat(dispatched.get(0).getQuantity().getQuantity()).isEqualTo(3);
+        assertThat(dispatched.get(0).getQuantity().getValue()).isEqualTo(3);
     }
 }

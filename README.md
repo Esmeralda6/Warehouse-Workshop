@@ -14,13 +14,15 @@ classDiagram
         +checkOwnStock(items) boolean
         +consumeStock(items) List<stockItem>
         +receiveDelivery(items) void
-        +needsReplenishment() boolean
         +dispatchItems(items) void
     }
     class StockItem {
         <<entity>>
+        +StockItemID stockItemId
         +ProductId productId
         +Quantity quantity
+        +WarehouseId warehouseId
+        +Quantity minimumQuantityRule
         +isEnough(needed) boolean
         +add(qty) void
         +subtract(qty) void
@@ -43,21 +45,21 @@ classDiagram
         <<value object>>
         +UUID value
     }
+    class StockItemId{
+        <<value object>>
+        +UUID id
+    }
     class FactoryId {
         <<value object>>
         +UUID value
-    }
-    class StockItemId {
-        <<value object>>
-        +UUID value
-    }
+}
     Warehouse "1" --> "1..*" StockItem
     Warehouse --> WarehouseId
     Warehouse --> Location
     Warehouse --> FactoryId
     StockItem --> ProductId
     StockItem --> Quantity
-    
+    StockItem --> StockItemId
 ```
 
 ## Module: replenishment

@@ -8,20 +8,21 @@ classDiagram
         <<aggregate root>>
         +WarehouseId id
         +String name
+        +Type warehouseType 
         +Location location
-        +Map minStockRules
-        +boolean isStockInfinite
         +FactoryId id
         +checkOwnStock(items) boolean
-        +consumeStock(items) void
+        +consumeStock(items) List<stockItem>
         +receiveDelivery(items) void
-        +needsReplenishment() boolean
         +dispatchItems(items) void
     }
     class StockItem {
         <<entity>>
+        +StockItemID stockItemId
         +ProductId productId
         +Quantity quantity
+        +WarehouseId warehouseId
+        +Quantity minimumQuantityRule
         +isEnough(needed) boolean
         +add(qty) void
         +subtract(qty) void
@@ -42,18 +43,30 @@ classDiagram
     }
     class ProductId {
         <<value object>>
-        +String value
+        +UUID value
+    }
+    class StockItemId{
+        <<value object>>
+        +UUID id
     }
     class FactoryId {
         <<value object>>
         +UUID value
-}
+    }
+    class Type {
+        <<enumeration>>
+        PRODUCTION
+        FACTORY
+        CLIENT
+    }
     Warehouse "1" --> "1..*" StockItem
     Warehouse --> WarehouseId
     Warehouse --> Location
     Warehouse --> FactoryId
+    Warehouse --> Type
     StockItem --> ProductId
     StockItem --> Quantity
+    StockItem --> StockItemId
 ```
 
 ## Module: replenishment
@@ -144,6 +157,28 @@ classDiagram
     DispatchShipment --> Warehouse
 ```
 
+## REST
+
+```mermaid
+classDiagram
+    START1([POST/warehouses])
+    START2([GET/warehouses])
+    START3([GET/warehouses/{warehouseId}])
+    POST1[RegisterWarehouse]
+    GET1[GetAllWarehouses]
+    ID1[GetWarehouseByWarehouseId]
+    POST2[Creates and persists a Warehouse\Publishes\warehouse.registered.v1]
+    GET2[Gets All Warehouses]
+    ID2[Gets a Warehouse by his id]
+    START1 --> POST1
+    POST1 --> POST2
+    START2 --> GET1
+    GET1 --> GET2
+    START3 --> ID1
+    ID1 --> ID2
+    
+```
+
 ## Decision logic — production.materials.requested.v1
 
 ```mermaid
@@ -171,4 +206,3 @@ flowchart TD
 | warehouse.stock.changed.v1 | Production, Reporting |
 | dispatch.requested.v1 | Transport |
 | warehouse.registered.v1 | Time/Map |
-](https://github.com/Esmeralda6/Warehouse-Workshop.git)

@@ -2,7 +2,6 @@ package com.gft.warehouse.warehouseworkshop.domain.aggregates;
 
 import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
 import com.gft.warehouse.warehouseworkshop.domain.exceptions.InsuficientStockException;
-import com.gft.warehouse.warehouseworkshop.domain.services.ReplenishmentPolicy;
 import com.gft.warehouse.warehouseworkshop.domain.services.StockChecker;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
@@ -17,7 +16,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -33,13 +31,12 @@ class WarehouseTest {
                 .build();
     }
 
-    private Warehouse buildWarehouse(boolean isStockInfinite, List<StockItem> stock) {
+    private Warehouse buildWarehouse(List<StockItem> stock) {
         return Warehouse.builder()
                 .warehouseId(WarehouseId.builder().id(UUID.randomUUID()).build())
                 .warehouseName("Warehouse_1")
                 .warehouseType(Type.PRODUCTION)
                 .warehouseLocation(Location.builder().x(1).y(1).build())
-                .isStockInfinite(isStockInfinite)
                 .stock(stock)
                 .build();
     }
@@ -51,7 +48,6 @@ class WarehouseTest {
                         .warehouseName("Warehouse_1")
                         .warehouseType( Type.PRODUCTION )
                         .warehouseLocation( Location.builder().x(1).y(1).build())
-                        .isStockInfinite(true)
                         .factoryId(FactoryId.builder().id(UUID.randomUUID()).build())
                         .build()),
                 Arguments.of(Warehouse.builder()
@@ -59,7 +55,6 @@ class WarehouseTest {
                         .warehouseName("Warehouse_1")
                         .warehouseType( Type.PRODUCTION )
                         .warehouseLocation( Location.builder().x(1).y(1).build())
-                        .isStockInfinite(true)
                         .build())
         );
     }
@@ -72,7 +67,6 @@ class WarehouseTest {
         assertThat(warehouse.getWarehouseName()).isInstanceOf(String.class).isNotNull();
         assertThat(warehouse.getWarehouseType()).isInstanceOf(Type.class).isNotNull();
         assertThat(warehouse.getWarehouseLocation()).isInstanceOf(Location.class).isNotNull();
-        assertThat(warehouse.isStockInfinite()).isInstanceOf(Boolean.class).isNotNull();
     }
 
     private static Stream<Arguments> checkOwnStockCases() {
@@ -104,27 +98,27 @@ class WarehouseTest {
     @ParameterizedTest
     @MethodSource("checkOwnStockCases")
     void checkOwnStock(List<StockItem> stock, List<StockItem> requested, StockChecker checker, boolean expected) {
-        Warehouse warehouse = buildWarehouse(false, stock);
+        Warehouse warehouse = buildWarehouse(stock);
         assertThat(warehouse.checkOwnStock(requested, checker)).isEqualTo(expected);
     }
 
     @Test
     void consumeStock_reducesQuantityAndReturnsConsumedItems() {
         UUID productId = UUID.randomUUID();
-        Warehouse warehouse = buildWarehouse(false, new ArrayList<>(List.of(buildItem(productId, 10))));
+        Warehouse warehouse = buildWarehouse(new ArrayList<>(List.of(buildItem(productId, 10))));
         List<StockItem> requested = List.of(buildItem(productId, 4));
 
         List<StockItem> consumed = warehouse.consumeStock(requested);
 
-        assertThat(warehouse.getStock().get(0).getQuantity().getValue()).isEqualTo(6);
+        assertThat(warehouse.getStock().getFirst().getQuantity().getValue()).isEqualTo(6);
         assertThat(consumed).isEqualTo(requested);
-        assertThat(consumed.get(0).getQuantity().getValue()).isEqualTo(4);
+        assertThat(consumed.getFirst().getQuantity().getValue()).isEqualTo(4);
     }
 
     @Test
     void consumeStock_throwsWhenNotEnoughStock() {
         UUID productId = UUID.randomUUID();
-        Warehouse warehouse = buildWarehouse(false, new ArrayList<>(List.of(buildItem(productId, 2))));
+        Warehouse warehouse = buildWarehouse(new ArrayList<>(List.of(buildItem(productId, 2))));
 
         assertThrows(InsuficientStockException.class,
                 () -> warehouse.consumeStock(List.of(buildItem(productId, 5))));
@@ -133,34 +127,34 @@ class WarehouseTest {
     @Test
     void receiveDelivery_increasesQuantityForExistingProduct() {
         UUID productId = UUID.randomUUID();
-        Warehouse warehouse = buildWarehouse(false, new ArrayList<>(List.of(buildItem(productId, 5))));
+        Warehouse warehouse = buildWarehouse(new ArrayList<>(List.of(buildItem(productId, 5))));
 
         warehouse.receiveDelivery(List.of(buildItem(productId, 3)));
 
-        assertThat(warehouse.getStock().get(0).getQuantity().getValue()).isEqualTo(8);
+        assertThat(warehouse.getStock().getFirst().getQuantity().getValue()).isEqualTo(8);
     }
 
     @Test
     void receiveDelivery_addsNewItemForUnknownProduct() {
-        Warehouse warehouse = buildWarehouse(false, new ArrayList<>());
+        Warehouse warehouse = buildWarehouse(new ArrayList<>());
         UUID newProduct = UUID.randomUUID();
 
         warehouse.receiveDelivery(List.of(buildItem(newProduct, 10)));
 
         assertThat(warehouse.getStock()).hasSize(1);
-        assertThat(warehouse.getStock().get(0).getQuantity().getValue()).isEqualTo(10);
+        assertThat(warehouse.getStock().getFirst().getQuantity().getValue()).isEqualTo(10);
     }
 
     @Test
     void dispatchItems_reducesStockAndReturnsDispatchedItems() {
         UUID productId = UUID.randomUUID();
-        Warehouse warehouse = buildWarehouse(false, new ArrayList<>(List.of(buildItem(productId, 10))));
+        Warehouse warehouse = buildWarehouse(new ArrayList<>(List.of(buildItem(productId, 10))));
         List<StockItem> requested = List.of(buildItem(productId, 3));
 
         List<StockItem> dispatched = warehouse.dispatchItems(requested);
 
-        assertThat(warehouse.getStock().get(0).getQuantity().getValue()).isEqualTo(7);
+        assertThat(warehouse.getStock().getFirst().getQuantity().getValue()).isEqualTo(7);
         assertThat(dispatched).isEqualTo(requested);
-        assertThat(dispatched.get(0).getQuantity().getValue()).isEqualTo(3);
+        assertThat(dispatched.getFirst().getQuantity().getValue()).isEqualTo(3);
     }
 }

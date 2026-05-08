@@ -1,14 +1,14 @@
 package com.gft.warehouse.warehouseworkshop.domain.valueObject;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
 
 import java.util.UUID;
 
 @Builder
-@Getter
+@Value
 public class StockItemId {
-    private final UUID id;
+    UUID id;
 
     public StockItemId(UUID id) {
 

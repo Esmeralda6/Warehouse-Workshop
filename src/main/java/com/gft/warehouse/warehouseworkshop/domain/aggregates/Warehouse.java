@@ -1,7 +1,6 @@
 package com.gft.warehouse.warehouseworkshop.domain.aggregates;
 
 import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
-import com.gft.warehouse.warehouseworkshop.domain.services.ReplenishmentPolicy;
 import com.gft.warehouse.warehouseworkshop.domain.services.StockChecker;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
@@ -11,7 +10,6 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Builder
 @Getter

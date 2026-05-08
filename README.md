@@ -9,7 +9,6 @@ classDiagram
         +WarehouseId id
         +String name
         +Location location
-        +Map minStockRules
         +FactoryId id
         +checkOwnStock(items) boolean
         +consumeStock(items) List<stockItem>

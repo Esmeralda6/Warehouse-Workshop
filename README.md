@@ -8,6 +8,7 @@ classDiagram
         <<aggregate root>>
         +WarehouseId id
         +String name
+        +Type warehouseType 
         +Location location
         +FactoryId id
         +checkOwnStock(items) boolean
@@ -51,11 +52,18 @@ classDiagram
     class FactoryId {
         <<value object>>
         +UUID value
-}
+    }
+    class Type {
+        <<enumeration>>
+        PRODUCTION
+        FACTORY
+        CLIENT
+    }
     Warehouse "1" --> "1..*" StockItem
     Warehouse --> WarehouseId
     Warehouse --> Location
     Warehouse --> FactoryId
+    Warehouse --> Type
     StockItem --> ProductId
     StockItem --> Quantity
     StockItem --> StockItemId

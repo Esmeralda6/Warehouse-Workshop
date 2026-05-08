@@ -12,7 +12,7 @@ classDiagram
         +Map minStockRules
         +FactoryId id
         +checkOwnStock(items) boolean
-        +consumeStock(items) void
+        +consumeStock(items) List<stockItem>
         +receiveDelivery(items) void
         +needsReplenishment() boolean
         +dispatchItems(items) void
@@ -41,18 +41,23 @@ classDiagram
     }
     class ProductId {
         <<value object>>
-        +String value
+        +UUID value
     }
     class FactoryId {
         <<value object>>
         +UUID value
-}
+    }
+    class StockItemId {
+        <<value object>>
+        +UUID value
+    }
     Warehouse "1" --> "1..*" StockItem
     Warehouse --> WarehouseId
     Warehouse --> Location
     Warehouse --> FactoryId
     StockItem --> ProductId
     StockItem --> Quantity
+    
 ```
 
 ## Module: replenishment
@@ -143,6 +148,28 @@ classDiagram
     DispatchShipment --> Warehouse
 ```
 
+## REST
+
+```mermaid
+classDiagram
+    START1([POST/warehouses])
+    START2([GET/warehouses])
+    START3([GET/warehouses/{warehouseId}])
+    POST1[RegisterWarehouse]
+    GET1[GetAllWarehouses]
+    ID1[GetWarehouseByWarehouseId]
+    POST2[Creates and persists a Warehouse\Publishes\warehouse.registered.v1]
+    GET2[Gets All Warehouses]
+    ID2[Gets a Warehouse by his id]
+    START1 --> POST1
+    POST1 --> POST2
+    START2 --> GET1
+    GET1 --> GET2
+    START3 --> ID1
+    ID1 --> ID2
+    
+```
+
 ## Decision logic — production.materials.requested.v1
 
 ```mermaid
@@ -170,4 +197,3 @@ flowchart TD
 | warehouse.stock.changed.v1 | Production, Reporting |
 | dispatch.requested.v1 | Transport |
 | warehouse.registered.v1 | Time/Map |
-](https://github.com/Esmeralda6/Warehouse-Workshop.git)

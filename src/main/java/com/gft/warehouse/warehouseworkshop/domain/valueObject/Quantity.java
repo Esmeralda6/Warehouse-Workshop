@@ -1,12 +1,12 @@
 package com.gft.warehouse.warehouseworkshop.domain.valueObject;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
 
 @Builder
-@Getter
+@Value
 public class Quantity {
-    private final int value;
+    int value;
 
     public Quantity(int value) {
         this.value = validateQuantity(value);

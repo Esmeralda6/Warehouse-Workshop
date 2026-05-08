@@ -1,13 +1,13 @@
 package com.gft.warehouse.warehouseworkshop.domain.valueObject;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
 
 @Builder
-@Getter
+@Value
 public class Location {
-    private final int x;
-    private final int y;
+    int x;
+    int y;
 
     public Location(int x, int y) {
         this.x = validateXandY(x);

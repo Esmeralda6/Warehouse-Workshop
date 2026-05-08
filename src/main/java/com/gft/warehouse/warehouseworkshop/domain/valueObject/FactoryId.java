@@ -1,14 +1,14 @@
 package com.gft.warehouse.warehouseworkshop.domain.valueObject;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
+
 import java.util.UUID;
 
 @Builder
-@Getter
+@Value
 public class FactoryId {
-
-    private final UUID id;
+    UUID id;
 
     public FactoryId(UUID id) {
         this.id = validate(id);

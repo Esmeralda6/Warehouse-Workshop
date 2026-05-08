@@ -20,7 +20,6 @@ public class Warehouse {
     private final String warehouseName;
     private final Type warehouseType;
     private final Location warehouseLocation;
-    private final boolean isStockInfinite;
     private final FactoryId factoryId;
 
     @Builder.Default

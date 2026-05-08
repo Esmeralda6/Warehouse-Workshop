@@ -39,7 +39,6 @@ class WarehouseTest {
                 .warehouseName("Warehouse_1")
                 .warehouseType(Type.PRODUCTION)
                 .warehouseLocation(Location.builder().x(1).y(1).build())
-                .isStockInfinite(isStockInfinite)
                 .stock(stock)
                 .build();
     }
@@ -51,7 +50,6 @@ class WarehouseTest {
                         .warehouseName("Warehouse_1")
                         .warehouseType( Type.PRODUCTION )
                         .warehouseLocation( Location.builder().x(1).y(1).build())
-                        .isStockInfinite(true)
                         .factoryId(FactoryId.builder().id(UUID.randomUUID()).build())
                         .build()),
                 Arguments.of(Warehouse.builder()
@@ -59,7 +57,6 @@ class WarehouseTest {
                         .warehouseName("Warehouse_1")
                         .warehouseType( Type.PRODUCTION )
                         .warehouseLocation( Location.builder().x(1).y(1).build())
-                        .isStockInfinite(true)
                         .build())
         );
     }
@@ -72,7 +69,6 @@ class WarehouseTest {
         assertThat(warehouse.getWarehouseName()).isInstanceOf(String.class).isNotNull();
         assertThat(warehouse.getWarehouseType()).isInstanceOf(Type.class).isNotNull();
         assertThat(warehouse.getWarehouseLocation()).isInstanceOf(Location.class).isNotNull();
-        assertThat(warehouse.isStockInfinite()).isInstanceOf(Boolean.class).isNotNull();
     }
 
     private static Stream<Arguments> checkOwnStockCases() {

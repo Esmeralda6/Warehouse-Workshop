@@ -10,7 +10,6 @@ classDiagram
         +String name
         +Location location
         +Map minStockRules
-        +boolean isStockInfinite
         +FactoryId id
         +checkOwnStock(items) boolean
         +consumeStock(items) void

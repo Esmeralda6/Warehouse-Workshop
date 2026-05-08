@@ -6,21 +6,24 @@
 classDiagram
     class Warehouse {
         <<aggregate root>>
-        +WarehouseId id
-        +String name
-        +Location location
-        +Map minStockRules
+        +WarehouseId warehouseId
+        +String warehouseName
+        +Type warehouseType
+        +Location warehouseLocation
+        +boolean isStockInfinite
         +FactoryId id
         +checkOwnStock(items) boolean
         +consumeStock(items) void
         +receiveDelivery(items) void
-        +needsReplenishment() boolean
         +dispatchItems(items) void
     }
     class StockItem {
         <<entity>>
+        +StockItemID stocItemId
         +ProductId productId
         +Quantity quantity
+        +WarehouseId warehouseId
+        +Quantity minimumQuantityRule
         +isEnough(needed) boolean
         +add(qty) void
         +subtract(qty) void
@@ -41,7 +44,11 @@ classDiagram
     }
     class ProductId {
         <<value object>>
-        +String value
+        +UUID value
+    }
+    class StockItemId{
+        <<value object>>
+        +UUID id
     }
     class FactoryId {
         <<value object>>
@@ -53,6 +60,7 @@ classDiagram
     Warehouse --> FactoryId
     StockItem --> ProductId
     StockItem --> Quantity
+    StockItem --> StockItemId
 ```
 
 ## Module: replenishment
@@ -171,3 +179,5 @@ flowchart TD
 | dispatch.requested.v1 | Transport |
 | warehouse.registered.v1 | Time/Map |
 ](https://github.com/Esmeralda6/Warehouse-Workshop.git)
+
+

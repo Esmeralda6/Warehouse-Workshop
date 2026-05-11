@@ -96,8 +96,6 @@ class WarehouseServiceImplTest {
     @ParameterizedTest
     @MethodSource("providerNullableId")
     void saveWarehouse(WarehouseDTO warehouseDTO) {
-        String id = warehouseDTO.getId();
-
 
         var result = warehouseService.saveWarehouse(
                 warehouseDTO
@@ -107,8 +105,6 @@ class WarehouseServiceImplTest {
                 .isNotNull()
                 .isNotBlank();
         assertThat( result )
-                .isEqualTo(
-                        "Warehouse saved with id: " + id
-                );
+                .doesNotContain("null");
     }
 }

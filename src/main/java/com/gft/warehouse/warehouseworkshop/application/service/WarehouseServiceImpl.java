@@ -37,11 +37,12 @@ public class WarehouseServiceImpl implements WarehouseService{
 
 
     public String saveWarehouse(WarehouseDTO warehouseDTO) {
+        Warehouse warehouse = toDomain(warehouseDTO);
         warehouseRepository.save(
-                toDomain(warehouseDTO)
+                warehouse
         );
 
-        return "Warehouse saved with id: " + warehouseDTO.getId();
+        return "Warehouse saved with id: " + warehouse.getWarehouseId().getId().toString();
     }
 
     //MAPPERS

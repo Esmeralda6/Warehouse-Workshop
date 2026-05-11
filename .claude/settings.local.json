@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn test *)",
+      "PowerShell(java *)",
+      "PowerShell($env:JAVA_HOME = \"C:\\\\Program Files\\\\Microsoft\\\\jdk-25.0.2.10-hotspot\"; $env:PATH = \"$env:JAVA_HOME\\\\bin;$env:PATH\"; cd C:\\\\Users\\\\aozq\\\\IdeaProjects\\\\Warehouse-Workshop; .\\\\mvnw test 2>&1 | Select-String -Pattern \"ERROR|FAIL|Tests run|BUILD|at com\\\\.\" | Select-Object -Last 80)",
+      "PowerShell($env:JAVA_HOME = \"C:\\\\Program Files\\\\Microsoft\\\\jdk-25.0.2.10-hotspot\"; $env:PATH = \"$env:JAVA_HOME\\\\bin;$env:PATH\"; cd C:\\\\Users\\\\aozq\\\\IdeaProjects\\\\Warehouse-Workshop; .\\\\mvnw test 2>&1 | Select-String -Pattern \"ERROR|FAIL|Tests run|BUILD\" | Select-Object -Last 20)"
+    ]
+  }
+}

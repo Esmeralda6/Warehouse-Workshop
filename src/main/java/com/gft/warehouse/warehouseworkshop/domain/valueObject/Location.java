@@ -18,8 +18,8 @@ public class Location {
         if (value < 0) {
             throw new IllegalArgumentException("Location coordinate cannot be negative");
         }
-        if (value >= 100) {
-            throw new IllegalArgumentException("Location coordinate cannot be higher than 99");
+        if (value >= 50) {
+            throw new IllegalArgumentException("Location coordinate cannot be higher than 49");
         }
 
         return value;

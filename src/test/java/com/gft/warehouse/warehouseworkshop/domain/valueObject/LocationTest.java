@@ -46,19 +46,19 @@ class LocationTest {
                 .hasMessage("Location coordinate cannot be negative");
     }
 
-    private static Stream<Arguments> providerHigherThanNinetyNine(){
+    private static Stream<Arguments> providerHigherThanFortyNine(){
         return Stream.of(
-                Arguments.of(100, 1),
-                Arguments.of(1, 100),
-                Arguments.of(100, 100)
+                Arguments.of(50, 1),
+                Arguments.of(1, 50),
+                Arguments.of(50, 50)
         );
     }
 
     @ParameterizedTest
-    @MethodSource("providerHigherThanNinetyNine")
-    void shouldThrowExceptionWhenXIsHigherThanNinetyNine(int x, int y){
+    @MethodSource("providerHigherThanFortyNine")
+    void shouldThrowExceptionWhenXIsHigherThanFortyNine(int x, int y){
         assertThatThrownBy(() -> Location.builder().x(x).y(y).build())
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Location coordinate cannot be higher than 99");
+                .hasMessage("Location coordinate cannot be higher than 49");
     }
 }

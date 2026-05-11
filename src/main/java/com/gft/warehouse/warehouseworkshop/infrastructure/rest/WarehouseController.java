@@ -19,12 +19,10 @@ public class WarehouseController {
 
     @GetMapping("/list")
     public List<WarehouseDTO> getWarehouses(){
-        log.info("GET LIST");
         return warehouseService.getWarehouses();
     }
 
     @GetMapping("/{id}")
-
     public Optional<WarehouseDTO> getWarehouseById(
             @PathVariable String id
     ){
@@ -36,5 +34,20 @@ public class WarehouseController {
             @RequestBody WarehouseDTO warehouse
     ){
         return warehouseService.saveWarehouse( warehouse );
+    }
+
+    @PutMapping("/{id}")
+    public String updateWarehouse(
+            @PathVariable String id,
+            @RequestBody WarehouseDTO warehouse
+    ){
+        return warehouseService.updateWarehouse( id, warehouse );
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteWarehouse(
+            @PathVariable String id
+    ){
+        return warehouseService.deleteWarehouse( id );
     }
 }

@@ -5,8 +5,11 @@ import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
 import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
 import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
+import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
+import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class WarehouseServiceImpl implements WarehouseService{
 
     @Autowired
@@ -24,60 +28,73 @@ public class WarehouseServiceImpl implements WarehouseService{
     public List<WarehouseDTO> getWarehouses(){
         return warehouseRepository.findAll()
                 .stream()
-                .map(this::toDTO)
+                .map(Mapper::toDTO)
                 .toList();
     }
 
     //GET By Id
-        //prob wont work until changing the objectvalues euqalsandhascode() or annotated with @value or object as record instead of class
     public Optional<WarehouseDTO> getWarehouseById( String id){
         return warehouseRepository.findById(WarehouseId.builder().id(UUID.fromString(id)).build())
-                .map(this::toDTO);
+                .map(Mapper::toDTO);
     }
 
 
     public String saveWarehouse(WarehouseDTO warehouseDTO) {
-        Warehouse warehouse = toDomain(warehouseDTO);
-        warehouseRepository.save(
-                warehouse
+        log.info(warehouseDTO.toString());
+        WarehouseEntity savedWarehouse = warehouseRepository.save(
+                Mapper.toDomain(warehouseDTO)
         );
+        log.info(String.valueOf(savedWarehouse.getFactoryId()==null));
 
-        return "Warehouse saved with id: " + warehouse.getWarehouseId().getId().toString();
+        return "Warehouse saved with id: " + savedWarehouse.getId().toString();
     }
 
-    //MAPPERS
-
-    private WarehouseDTO toDTO(Warehouse warehouse){
-        return WarehouseDTO.builder()
-                .id( warehouse.getWarehouseId().getId().toString())
-                .name( warehouse.getWarehouseName() )
-                .location(
-                        LocationDTO.builder()
-                                .x(1)
-                                .y(2)
-                                .build())
-                .type( String.valueOf(warehouse.getWarehouseType()) )
-                .build();
+    public String updateWarehouse(String id, WarehouseDTO warehouseDTO) {
+        log.info(warehouseDTO.toString());
+        Optional<WarehouseDTO> warehouse = warehouseRepository.findById(
+                WarehouseId.builder().id(UUID.fromString(id)).build())
+                .map(updatedWarehouse -> {
+                    updatedWarehouse.setWarehouseName( warehouseDTO.getName() );
+                    updatedWarehouse.setWarehouseType( Type.valueOf(warehouseDTO.getType()) );
+                    updatedWarehouse.setWarehouseLocation(
+                            Location.builder()
+                                    .x(warehouseDTO.getLocation().getX())
+                                    .y(warehouseDTO.getLocation().getY())
+                                    .build()
+                    );
+                    if(warehouseDTO.getFactoryId() == null || warehouseDTO.getFactoryId().isBlank()){
+                        updatedWarehouse.setFactoryId(
+                                FactoryId.builder()
+                                        .id(null)
+                                        .build() );
+                    }else{
+                        updatedWarehouse.setFactoryId(
+                                FactoryId.builder()
+                                        .id(UUID.fromString(warehouseDTO.getFactoryId()))
+                                        .build() );
+                    }
+                    log.info(updatedWarehouse.toString());
+                    return Mapper.toDto( warehouseRepository.save(updatedWarehouse) );
+                });
+        if (warehouse.isPresent()){
+            return "Warehouse with id " + id + " succesfully updated";
+        }
+        return "Warehouse with id " + id + " not found.";
     }
 
-    private Warehouse toDomain(WarehouseDTO warehouseDTO){
-        UUID id = warehouseDTO.getId() != null ?
-                    UUID.fromString(warehouseDTO.getId())
-                    : UUID.randomUUID();
-        return Warehouse.builder()
-                .warehouseId(
-                        WarehouseId.builder()
-                                .id(id)
-                                .build()
-                )
-                .warehouseName( warehouseDTO.getName() )
-                .warehouseLocation(
-                        Location.builder()
-                                .x(warehouseDTO.getLocation().getX())
-                                .y(warehouseDTO.getLocation().getY())
-                                .build()
-                )
-                .warehouseType( Type.valueOf( warehouseDTO.getType().toUpperCase() ) )
-                .build();
+    public String deleteWarehouse(String id) {
+        WarehouseId warehouseId = WarehouseId.builder().id(UUID.fromString(id)).build();
+        if(
+                warehouseRepository.findById( warehouseId ).isPresent()
+        ){
+            warehouseRepository.delete( warehouseId );
+            return "Warehouse with id " + id + " succesfully deleted.";
+        }
+        return "Warehouse with id " + id + " was not found.";
+    }
+
+    public String findAvailableWarehouse(FactoryId factoryId) {
+
+        return "";
     }
 }

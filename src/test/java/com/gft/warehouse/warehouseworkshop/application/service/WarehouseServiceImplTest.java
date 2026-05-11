@@ -3,6 +3,9 @@ package com.gft.warehouse.warehouseworkshop.application.service;
 import com.gft.warehouse.warehouseworkshop.application.dto.LocationDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
+import com.gft.warehouse.warehouseworkshop.domain.events.DomainEvent;
+import com.gft.warehouse.warehouseworkshop.domain.events.WarehouseCreatedEvent;
+import com.gft.warehouse.warehouseworkshop.domain.ports.EventPublisher;
 import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
@@ -11,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,6 +24,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,6 +36,9 @@ class WarehouseServiceImplTest {
 
     @Mock
     private WarehouseRepository warehouseRepository;
+
+    @Mock
+    private EventPublisher eventPublisher;
 
     @Test
     void getWarehouses() {
@@ -106,5 +114,23 @@ class WarehouseServiceImplTest {
                 .isNotBlank();
         assertThat( result )
                 .doesNotContain("null");
+    }
+
+    @Test
+    void saveWarehouse_publishesWarehouseCreatedEvent() {
+        WarehouseDTO dto = WarehouseDTO.builder()
+                .name("warehouse_1")
+                .location(LocationDTO.builder().x(1).y(2).build())
+                .type("FACTORY")
+                .build();
+
+        warehouseService.saveWarehouse(dto);
+
+        ArgumentCaptor<DomainEvent> captor = ArgumentCaptor.forClass(DomainEvent.class);
+        verify(eventPublisher).publish(captor.capture());
+        assertThat(captor.getValue()).isInstanceOf(WarehouseCreatedEvent.class);
+        WarehouseCreatedEvent event = (WarehouseCreatedEvent) captor.getValue();
+        assertThat(event.getWarehouseName()).isEqualTo("warehouse_1");
+        assertThat(event.getWarehouseType()).isEqualTo("FACTORY");
     }
 }

@@ -2,7 +2,6 @@ package com.gft.warehouse.warehouseworkshop.application.service;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
-import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 
 import java.util.List;
 import java.util.Optional;

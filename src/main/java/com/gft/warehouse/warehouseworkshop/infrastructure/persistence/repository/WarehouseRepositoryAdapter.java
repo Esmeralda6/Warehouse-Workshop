@@ -3,7 +3,6 @@ package com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repositor
 import com.gft.warehouse.warehouseworkshop.application.service.Mapper;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
 import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
-import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
 import lombok.RequiredArgsConstructor;

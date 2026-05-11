@@ -19,11 +19,11 @@ public class WarehouseDTO {
     @NotBlank
     String name;
 
-    LocationDTO location;
-
     @Enumerated(EnumType.STRING)
     @NotBlank
     String type;
+
+    LocationDTO location;
 
     //Nullable
     String factoryId;

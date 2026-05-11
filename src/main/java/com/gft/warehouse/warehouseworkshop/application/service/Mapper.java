@@ -78,7 +78,7 @@ public abstract class Mapper {
                 .type( warehouse.getWarehouseType())
                 .x( warehouse.getWarehouseLocation().getX() )
                 .y( warehouse.getWarehouseLocation().getY() )
-                .factoryId( getNullableIdToUuid(warehouse.getFactoryId().getId()))
+                .factoryId( warehouse.getFactoryId().getId() )
                 .build();
     }
 
@@ -96,7 +96,7 @@ public abstract class Mapper {
                 )
                 .factoryId(
                         FactoryId.builder()
-                                .id(getNullableIdToUuid(entity.getFactoryId()))
+                                .id( entity.getFactoryId() )
                                 .build()
                 )
                 .build();
@@ -112,9 +112,5 @@ public abstract class Mapper {
                 null
                 : UUID.fromString(id);
     }
-    private static UUID getNullableIdToUuid( UUID id ){
-        return id ==null ?
-                null
-                : id;
-    }
+
 }

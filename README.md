@@ -190,91 +190,165 @@ flowchart TD
     Q2 -->|NO| NO2
 ```
 
-### Events published
+## Event Contracts
 
-| Event | Consumed by |
+### RabbitMQ Infrastructure
+
+| Constant | Value |
 |---|---|
-| replenishment.requested.v1 | Production, Reporting |
-| warehouse.stock.changed.v1 | Production, Reporting |
-| dispatch.requested.v1 | Transport |
-| warehouse.registered.v1 | Time/Map |
+| `EXCHANGE` | `warehouses.exchange` |
+| `TIME_EXCHANGE` | `ms-time.exchange` |
+| `QUEUE_WAREHOUSE_CREATED` | `warehouse.registered.queue` |
+| `ROUTING_KEY_WAREHOUSE_CREATED` | `warehouse.registered.v1` |
+| `QUEUE_TIME_TICK` | `warehouse.time.tick.queue` |
+| `ROUTING_KEY_TIME_TICK` | `time.advanced.v1` |
 
+> **Note on time events:** `time.advanced.v1` is NOT consumed directly from `ms-time.exchange`. Instead, we declare our own queue (`warehouse.time.tick.queue`) bound to `ms-time.exchange` with routing key `time.advanced.v1`. The time exchange is declared with `setShouldDeclare(false)` since it is owned by the Time microservice.
 
-CONTRACTS
-### `production.materials.requested.v1`
+---
 
-Request from production for warehouse to check if items requested are in stock.
+### Events Published by Warehouse
 
-| Field | Type | Notes |
-|---|---|---|
-| `orderId` | String (UUID) |  |
-| `factoryId` | String (UUID) |  |
-| `warehouseId` | String (UUID) |  |
-| `items[]` | Array of Value Objects | Ingredient Items |
-| `items[].ingredientId` | String (UUID) | Id of ingredient material  |
-| `items[].quantity` | Integer | Quantity of material required |
+| Event | Routing key | Exchange | Consumed by |
+|---|---|---|---|
+| WarehouseRegistered | `warehouse.registered.v1` | `warehouses.exchange` | Map, Reporting |
+| ReplenishmentRequested | `replenishment.requested.v1` | `warehouses.exchange` | Production, Reporting |
+| StockChanged | `warehouse.stock.changed.v1` | `warehouses.exchange` | Production, Reporting |
+| ShipmentRequested | `shipment.requested.v1` | `warehouses.exchange` | Trucks |
+| WarehouseOrderBlocked | `warehouse.order.blocked.v1` | `warehouses.exchange` | Reporting |
+| MaterialsGiven | `materials.given.v1` | `warehouses.exchange` | Factory |
 
-**Consumed from:** 
-**Emitter:** Factories
-
-**Action:** 
-
+#### `warehouse.registered.v1`
 ```json
 {
-  "orderId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
-  "factoryId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
-  "warehouseId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "warehouseId": "uuid",
+  "name": "string",
+  "location": { "x": 0, "y": 0 },
+  "warehouseType": "PRODUCTION | FACTORY | CLIENT"
+}
+```
+
+#### `replenishment.requested.v1`
+```json
+{
+  "productId": "string",
+  "quantity": 0,
+  "type": "string"
+}
+```
+
+#### `warehouse.stock.changed.v1`
+```json
+{
+  "productId": "string",
+  "quantity": 0,
+  "type": "string"
+}
+```
+
+#### `shipment.requested.v1`
+```json
+{
+  "shipmentId": "uuid",
+  "originId": "warehouse-north-01",
+  "destinationId": "warehouse-south-03",
+  "items": [{ "materialType": "wood", "quantity": 6 }],
+  "requestedAt": 3
+}
+```
+
+#### `warehouse.order.blocked.v1`
+```json
+{
+  "orderId": "uuid"
+}
+```
+
+#### `materials.given.v1`
+```json
+{
   "items": [
-    { "ingredientId": "c9d8e7f6-a5b4-3210-9876-543210fedcba", "quantity": 6 },
-    { "ingredientId": "c9d8e7f6-a5b4-3210-9876-543210fedcba", "quantity": 12 }
+    { "productId": "uuid", "quantity": 0 }
   ]
 }
 ```
 
 ---
 
-### `production.order.completed.v1`
+### Events Consumed by Warehouse
 
-Request from production for warehouse to check if items requested are in stock.
+| Event | Routing key | Source exchange | Published by |
+|---|---|---|---|
+| TimeTick | `time.advanced.v1` | `ms-time.exchange` | Time |
+| MaterialsRequested | `product.materials.requested.v1` | `warehouses.exchange` | Factory |
+| ProductionOrderCompleted | `production.order.completed.v1` | `warehouses.exchange` | Factory |
+| DeliveryCompleted | `delivery.completed.v1` | `warehouses.exchange` | Trucks |
 
-| Field | Type | Notes |
-|---|---|---|
-| `orderId` | String (UUID) |  |
-| `factoryId` | String (UUID) | factoryAssigned |
-| `warehouseId` | String (UUID) |  |
-| `productId` | String (UUID) | resulting created product |
-| `quantity` | int | resulting product quantity |
-? | `status` | enum | order status, perhaps unnecessary |
-
-
-
-
-**Consumed from:** 
-**Emitter:** Factories
-
-**Action:** 
-
+#### `time.advanced.v1`
+> Consumed via `warehouse.time.tick.queue` bound to `ms-time.exchange`
 ```json
 {
-  "orderId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
-  "factoryId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
-  "warehouseId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
-  "ingredientId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
-  "quantity": 6,
+  "tick": 0
+}
+```
 
+#### `product.materials.requested.v1`
+```json
+{
+  "items": [
+    { "productId": "uuid", "quantity": 0 }
+  ]
+}
+```
+
+#### `production.order.completed.v1`
+```json
+{
+  "warehouseOrderId": "uuid",
+  "productionOrderId": "uuid",
+  "productId": "uuid",
+  "factoryAsign": "uuid",
+  "quantity": 0,
+  "status": "enum"
+}
+```
+
+#### `delivery.completed.v1`
+```json
+{
+  "shipmentId": "uuid",
+  "truckId": "uuid",
+  "items": [{ "materialType": "wood", "quantity": 6 }],
+  "location": { "x": 8, "y": 2 },
+  "completedAt": 5
 }
 ```
 
 ---
 
-### `replenishment.requested.v1`
-**Consumed from:** Factories 
-**Emitter:** Warehouse
-```json
-{
-  "orderId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
-  "factoryId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
-  "warehouseId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
-  "productId": "c9d8e7f6-a5b4-3210-9876-543210fedcba", "quantity": 6
-}
-```
+### Other microservices — event summary
+
+#### Factory
+| Direction | Event | Payload fields |
+|---|---|---|
+| Receives from Warehouse | `materials.given.v1` | `items[]{productId: UUID, quantity: int}` |
+| Sends to Warehouse | `product.materials.requested.v1` | `items[]{productId: UUID, quantity: int}` |
+| Sends to Warehouse | `production.order.completed.v1` | `warehouseOrderId, productionOrderId, productId, factoryAsign, quantity, status` |
+
+#### Map
+| Direction | Event | Payload fields |
+|---|---|---|
+| Receives from Warehouse | `warehouse.registered.v1` | `warehouseId: UUID, name: String, location: {x,y}, warehouseType: enum` |
+
+#### Trucks
+| Direction | Event | Payload fields |
+|---|---|---|
+| Receives from Warehouse | `shipment.requested.v1` | `shipmentId, originId, destinationId, items[]{materialType, quantity}, requestedAt` |
+| Sends to Warehouse | `delivery.completed.v1` | `shipmentId, truckId, items[]{materialType, quantity}, location{x,y}, completedAt` |
+
+#### Reporting
+| Direction | Event | Payload fields |
+|---|---|---|
+| Receives from Warehouse | `replenishment.requested.v1` | `productId: String, quantity: int, type: String` |
+| Receives from Warehouse | `warehouse.stock.changed.v1` | `productId: String, quantity: int, type: String` |
+| Receives from Warehouse | `warehouse.order.blocked.v1` | `orderId: UUID` |

@@ -13,6 +13,7 @@ public class RabbitMQEventPublisher implements EventPublisher {
 
     public RabbitMQEventPublisher(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
+
     }
 
     @Override

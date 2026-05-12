@@ -1,5 +1,6 @@
 package com.gft.warehouse.warehouseworkshop.application.service;
 
+import com.gft.warehouse.warehouseworkshop.application.dto.FactoryIdDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
 
@@ -13,5 +14,6 @@ public interface WarehouseService {
     String updateWarehouse( String id, WarehouseDTO warehouseDTO);
     String deleteWarehouse( String id );
 
-    String findAvailableWarehouse(FactoryId factoryId);
+    Optional<WarehouseDTO> findAvailableWarehouse();
+    String assignFactoryId( String warehouseId, FactoryIdDTO factoryId);
 }

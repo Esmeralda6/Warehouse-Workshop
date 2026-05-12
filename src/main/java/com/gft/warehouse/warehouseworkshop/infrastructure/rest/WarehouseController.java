@@ -1,5 +1,7 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.rest;
 
+import com.gft.warehouse.warehouseworkshop.application.dto.AssignFactoryResponse;
+import com.gft.warehouse.warehouseworkshop.application.dto.FactoryIdDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import com.gft.warehouse.warehouseworkshop.application.service.WarehouseService;
 import lombok.extern.slf4j.Slf4j;
@@ -49,5 +51,22 @@ public class WarehouseController {
             @PathVariable String id
     ){
         return warehouseService.deleteWarehouse( id );
+    }
+
+    //Assign warehouse to a new factory
+
+    //Find Warehouse without assigned FactoryId
+        //Currently only checks if FactoryId==null && Type==FACTORY, and returns first found
+    @GetMapping("/available")
+    public Optional<WarehouseDTO> findAvailableWarehouse(){
+        return warehouseService.findAvailableWarehouse();
+    }
+
+    @PatchMapping("/assignFactory/{warehouseId}")
+    public String assignFactory(
+            @PathVariable String warehouseId,
+            @RequestBody FactoryIdDTO factoryId
+            ){
+        return warehouseService.assignFactoryId(warehouseId, factoryId);
     }
 }

@@ -10,9 +10,9 @@ class WarehouseEventListenerTest {
     private final WarehouseEventListener listener = new WarehouseEventListener();
 
     @Test
-    void onWarehouseCreated_doesNotThrow() {
+    void onWarehouseRegistered_doesNotThrow() {
         WarehouseCreatedEvent event = new WarehouseCreatedEvent("wh-1", "Main Warehouse", "FACTORY");
 
-        assertThatCode(() -> listener.onWarehouseCreated(event)).doesNotThrowAnyException();
+        assertThatCode(() -> listener.onWarehouseRegistered(event)).doesNotThrowAnyException();
     }
 }

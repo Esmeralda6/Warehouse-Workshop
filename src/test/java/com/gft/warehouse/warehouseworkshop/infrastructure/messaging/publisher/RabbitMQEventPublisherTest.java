@@ -26,6 +26,6 @@ class RabbitMQEventPublisherTest {
 
         publisher.publish(event);
 
-        verify(rabbitTemplate).convertAndSend(RabbitMQConfig.EXCHANGE, "warehouse.created", event);
+        verify(rabbitTemplate).convertAndSend(RabbitMQConfig.EXCHANGE, "warehouse.registered.v1", event);
     }
 }

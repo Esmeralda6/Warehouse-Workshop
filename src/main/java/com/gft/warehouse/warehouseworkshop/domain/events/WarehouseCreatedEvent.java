@@ -27,6 +27,6 @@ public class WarehouseCreatedEvent extends DomainEvent {
 
     @Override
     public String getEventType() {
-        return "warehouse.created";
+        return "warehouse.registered.v1";
     }
 }

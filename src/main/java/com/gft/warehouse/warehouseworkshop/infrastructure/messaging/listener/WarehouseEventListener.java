@@ -13,8 +13,8 @@ public class WarehouseEventListener {
     private static final Logger log = LoggerFactory.getLogger(WarehouseEventListener.class);
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_WAREHOUSE_CREATED)
-    public void onWarehouseCreated(WarehouseCreatedEvent event) {
-        log.info("Event received [{}]: warehouse '{}' of type '{}' created at {}",
+    public void onWarehouseRegistered(WarehouseCreatedEvent event) {
+        log.info("Event received [{}]: warehouse '{}' of type '{}' registered at {}",
                 event.getEventId(), event.getWarehouseName(), event.getWarehouseType(), event.getOccurredOn());
     }
 }

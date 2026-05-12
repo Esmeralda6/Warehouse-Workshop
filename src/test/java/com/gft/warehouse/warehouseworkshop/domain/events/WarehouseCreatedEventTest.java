@@ -18,10 +18,10 @@ class WarehouseCreatedEventTest {
     }
 
     @Test
-    void getEventType_returnsWarehouseCreated() {
+    void getEventType_returnsWarehouseRegistered() {
         WarehouseCreatedEvent event = new WarehouseCreatedEvent("wh-1", "Main Warehouse", "FACTORY");
 
-        assertThat(event.getEventType()).isEqualTo("warehouse.created");
+        assertThat(event.getEventType()).isEqualTo("warehouse.registered.v1");
     }
 
     @Test

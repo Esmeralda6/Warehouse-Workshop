@@ -4,6 +4,8 @@ import com.gft.warehouse.warehouseworkshop.application.dto.LocationDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
 import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
+import com.gft.warehouse.warehouseworkshop.domain.events.WarehouseCreatedEvent;
+import com.gft.warehouse.warehouseworkshop.domain.ports.EventPublisher;
 import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
@@ -19,6 +21,9 @@ public class WarehouseServiceImpl implements WarehouseService{
 
     @Autowired
     private WarehouseRepository warehouseRepository;
+
+    @Autowired
+    private EventPublisher eventPublisher;
 
     // GET warehouses
     public List<WarehouseDTO> getWarehouses(){
@@ -38,9 +43,15 @@ public class WarehouseServiceImpl implements WarehouseService{
 
     public String saveWarehouse(WarehouseDTO warehouseDTO) {
         Warehouse warehouse = toDomain(warehouseDTO);
-        warehouseRepository.save(
-                warehouse
-        );
+        warehouseRepository.save(warehouse);
+
+        warehouse.recordEvent(new WarehouseCreatedEvent(
+                warehouse.getWarehouseId().getId().toString(),
+                warehouse.getWarehouseName(),
+                warehouse.getWarehouseType().name()
+        ));
+        warehouse.getDomainEvents().forEach(eventPublisher::publish);
+        warehouse.clearDomainEvents();
 
         return "Warehouse saved with id: " + warehouse.getWarehouseId().getId().toString();
     }

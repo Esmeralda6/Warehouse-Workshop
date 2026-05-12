@@ -221,7 +221,7 @@ Request from production for warehouse to check if items requested are in stock.
 
 ```json
 {
-  "shipmentId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "orderId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
   "factoryId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
   "warehouseId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
   "items": [
@@ -256,7 +256,7 @@ Request from production for warehouse to check if items requested are in stock.
 
 ```json
 {
-  "shipmentId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "orderId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
   "factoryId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
   "warehouseId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
   "ingredientId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
@@ -266,3 +266,15 @@ Request from production for warehouse to check if items requested are in stock.
 ```
 
 ---
+
+### `replenishment.requested.v1`
+**Consumed from:** Factories 
+**Emitter:** Warehouse
+```json
+{
+  "orderId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "factoryId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "warehouseId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "productId": "c9d8e7f6-a5b4-3210-9876-543210fedcba", "quantity": 6
+}
+```

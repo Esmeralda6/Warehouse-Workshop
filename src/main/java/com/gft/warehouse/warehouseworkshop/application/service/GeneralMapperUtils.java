@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.UUID;
 
 @Slf4j
-public abstract class Mapper {
+public abstract class GeneralMapperUtils {
     public static WarehouseDTO toDTO(Warehouse warehouse){
 
         return WarehouseDTO.builder()
@@ -25,7 +25,7 @@ public abstract class Mapper {
                                 .x( warehouse.getWarehouseLocation().getX() )
                                 .y( warehouse.getWarehouseLocation().getY() )
                                 .build())
-                .factoryId( getNullableIdToString(warehouse.getFactoryId().getId()) )
+                .factoryId( nullableIdToString(warehouse.getFactoryId().getId()) )
                 .build();
     }
 
@@ -40,7 +40,7 @@ public abstract class Mapper {
                                 .x( warehouseEntity.getX() )
                                 .y( warehouseEntity.getY() )
                                 .build())
-                .factoryId( getNullableIdToString( warehouseEntity.getFactoryId()) )
+                .factoryId( nullableIdToString( warehouseEntity.getFactoryId()) )
                 .build();
     }
 
@@ -48,7 +48,6 @@ public abstract class Mapper {
         UUID warehouseId = warehouseDTO.getId() != null ?
                 UUID.fromString(warehouseDTO.getId())
                 : UUID.randomUUID();
-        log.info(warehouseDTO.toString());
         return Warehouse.builder()
                 .warehouseId(
                         WarehouseId.builder()
@@ -65,23 +64,10 @@ public abstract class Mapper {
                 )
                 .factoryId(
                         FactoryId.builder()
-                                .id(getNullableIdToUuid(warehouseDTO.getId()))
+                                .id(nullableIdToUuid(warehouseDTO.getId()))
                                 .build() )
                 .build();
     }
-
-    //Repository
-    public static WarehouseEntity toEntity(Warehouse warehouse){
-        return WarehouseEntity.builder()
-                .id( warehouse.getWarehouseId().getId() )
-                .name( warehouse.getWarehouseName() )
-                .type( warehouse.getWarehouseType())
-                .x( warehouse.getWarehouseLocation().getX() )
-                .y( warehouse.getWarehouseLocation().getY() )
-                .factoryId( warehouse.getFactoryId().getId() )
-                .build();
-    }
-
 
     public static Warehouse toDomain(WarehouseEntity entity){
         return Warehouse.builder()
@@ -102,13 +88,24 @@ public abstract class Mapper {
                 .build();
     }
 
-    private static String getNullableIdToString( UUID id ){
-        return id ==null ?
+    public static WarehouseEntity toEntity(Warehouse warehouse){
+        return WarehouseEntity.builder()
+                .id( warehouse.getWarehouseId().getId() )
+                .name( warehouse.getWarehouseName() )
+                .type( warehouse.getWarehouseType())
+                .x( warehouse.getWarehouseLocation().getX() )
+                .y( warehouse.getWarehouseLocation().getY() )
+                .factoryId( warehouse.getFactoryId().getId() )
+                .build();
+    }
+
+    private static String nullableIdToString(UUID id ){
+        return id == null ?
                 null
                 : id.toString();
     }
-    private static UUID getNullableIdToUuid( String id ){
-        return id ==null ?
+    private static UUID nullableIdToUuid(String id ){
+        return id == null ?
                 null
                 : UUID.fromString(id);
     }

@@ -1,6 +1,5 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.rest;
 
-import com.gft.warehouse.warehouseworkshop.application.dto.AssignFactoryResponse;
 import com.gft.warehouse.warehouseworkshop.application.dto.FactoryIdDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import com.gft.warehouse.warehouseworkshop.application.service.WarehouseService;

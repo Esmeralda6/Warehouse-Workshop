@@ -198,3 +198,71 @@ flowchart TD
 | warehouse.stock.changed.v1 | Production, Reporting |
 | dispatch.requested.v1 | Transport |
 | warehouse.registered.v1 | Time/Map |
+
+
+CONTRACTS
+### `production.materials.requested.v1`
+
+Request from production for warehouse to check if items requested are in stock.
+
+| Field | Type | Notes |
+|---|---|---|
+| `orderId` | String (UUID) |  |
+| `factoryId` | String (UUID) |  |
+| `warehouseId` | String (UUID) |  |
+| `items[]` | Array of Value Objects | Ingredient Items |
+| `items[].ingredientId` | String (UUID) | Id of ingredient material  |
+| `items[].quantity` | Integer | Quantity of material required |
+
+**Consumed from:** 
+**Emitter:** Factories
+
+**Action:** 
+
+```json
+{
+  "shipmentId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "factoryId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "warehouseId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "items": [
+    { "ingredientId": "c9d8e7f6-a5b4-3210-9876-543210fedcba", "quantity": 6 },
+    { "ingredientId": "c9d8e7f6-a5b4-3210-9876-543210fedcba", "quantity": 12 }
+  ]
+}
+```
+
+---
+
+### `production.order.completed.v1`
+
+Request from production for warehouse to check if items requested are in stock.
+
+| Field | Type | Notes |
+|---|---|---|
+| `orderId` | String (UUID) |  |
+| `factoryId` | String (UUID) | factoryAssigned |
+| `warehouseId` | String (UUID) |  |
+| `productId` | String (UUID) | resulting created product |
+| `quantity` | int | resulting product quantity |
+? | `status` | enum | order status, perhaps unnecessary |
+
+
+
+
+**Consumed from:** 
+**Emitter:** Factories
+
+**Action:** 
+
+```json
+{
+  "shipmentId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "factoryId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "warehouseId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "ingredientId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "quantity": 6,
+
+}
+```
+
+---

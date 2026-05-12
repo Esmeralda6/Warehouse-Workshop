@@ -267,7 +267,7 @@ Request from production for warehouse to check if items requested are in stock.
 
 ---
 
-### `replenishment.requested.v1`
+### API POST createOrder / `replenishment.requested.v1`
 **Consumed from:** Factories 
 **Emitter:** Warehouse
 ```json
@@ -276,5 +276,20 @@ Request from production for warehouse to check if items requested are in stock.
   "factoryId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
   "warehouseId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
   "productId": "c9d8e7f6-a5b4-3210-9876-543210fedcba", "quantity": 6
+}
+```
+
+### `materials.given`
+**Consumed from:** Factories 
+**Emitter:** Warehouse
+```json
+{
+  "orderId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "factoryId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "warehouseId": "c9d8e7f6-a5b4-3210-9876-543210fedcba",
+  "items": [
+    { "ingredientId": "c9d8e7f6-a5b4-3210-9876-543210fedcba", "quantity": 6 },
+    { "ingredientId": "c9d8e7f6-a5b4-3210-9876-543210fedcba", "quantity": 12 }
+  ]
 }
 ```

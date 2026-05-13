@@ -267,6 +267,7 @@ flowchart TD
 #### `materials.given.v1`
 ```json
 {
+  "orderId" : "uuid"
   "items": [
     { "productId": "uuid", "quantity": 0 }
   ]
@@ -295,6 +296,7 @@ flowchart TD
 #### `product.materials.requested.v1`
 ```json
 {
+  "orderId" : "uuid"
   "items": [
     { "productId": "uuid", "quantity": 0 }
   ]

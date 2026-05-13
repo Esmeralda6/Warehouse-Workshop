@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### RabbitMQ config ###
+src/main/java/com/gft/warehouse/warehouseworkshop/infrastructure/messaging/config/

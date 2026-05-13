@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\aozq\\\\IdeaProjects\\\\Warehouse-Workshop\" -Recurse -Depth 2)",
+      "Bash(Select-Object FullName)",
+      "PowerShell(Test-Path *)",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell($jar = \"$env:USERPROFILE\\\\.m2\\\\repository\\\\org\\\\springframework\\\\amqp\\\\spring-rabbit\\\\4.0.3\\\\spring-rabbit-4.0.3.jar\"; Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [System.IO.Compression.ZipFile]::OpenRead\\($jar\\); $zip.Entries | Select-Object -First 30 | Select-Object FullName; $zip.Dispose\\(\\))"
+    ]
+  }
+}

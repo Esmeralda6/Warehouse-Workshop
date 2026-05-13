@@ -1,6 +1,8 @@
 package com.gft.warehouse.warehouseworkshop.domain.aggregates;
 
 import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
+import com.gft.warehouse.warehouseworkshop.domain.events.DomainEvent;
+import com.gft.warehouse.warehouseworkshop.domain.events.WarehouseCreatedEvent;
 import com.gft.warehouse.warehouseworkshop.domain.exceptions.InsuficientStockException;
 import com.gft.warehouse.warehouseworkshop.domain.services.StockChecker;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
@@ -156,5 +158,37 @@ class WarehouseTest {
         assertThat(warehouse.getStock().getFirst().getQuantity().getValue()).isEqualTo(7);
         assertThat(dispatched).isEqualTo(requested);
         assertThat(dispatched.getFirst().getQuantity().getValue()).isEqualTo(3);
+    }
+
+    @Test
+    void recordEvent_addsDomainEventToList() {
+        Warehouse warehouse = buildWarehouse(new ArrayList<>());
+        DomainEvent event = new WarehouseCreatedEvent("wh-1", "Warehouse_1", "PRODUCTION");
+
+        warehouse.recordEvent(event);
+
+        assertThat(warehouse.getDomainEvents()).hasSize(1).contains(event);
+    }
+
+    @Test
+    void getDomainEvents_returnsUnmodifiableCopy() {
+        Warehouse warehouse = buildWarehouse(new ArrayList<>());
+        warehouse.recordEvent(new WarehouseCreatedEvent("wh-1", "Warehouse_1", "PRODUCTION"));
+
+        List<DomainEvent> events = warehouse.getDomainEvents();
+
+        assertThat(events).hasSize(1);
+        org.junit.jupiter.api.Assertions.assertThrows(UnsupportedOperationException.class,
+                () -> events.add(new WarehouseCreatedEvent("wh-2", "Other", "FACTORY")));
+    }
+
+    @Test
+    void clearDomainEvents_emptiesEventList() {
+        Warehouse warehouse = buildWarehouse(new ArrayList<>());
+        warehouse.recordEvent(new WarehouseCreatedEvent("wh-1", "Warehouse_1", "PRODUCTION"));
+
+        warehouse.clearDomainEvents();
+
+        assertThat(warehouse.getDomainEvents()).isEmpty();
     }
 }

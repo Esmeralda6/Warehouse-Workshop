@@ -1,6 +1,7 @@
 package com.gft.warehouse.warehouseworkshop.domain.aggregates;
 
 import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
+import com.gft.warehouse.warehouseworkshop.domain.events.DomainEvent;
 import com.gft.warehouse.warehouseworkshop.domain.services.StockChecker;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
@@ -24,6 +25,21 @@ public class Warehouse {
 
     @Builder.Default
     private List<StockItem> stock = new ArrayList<>();
+
+    @Builder.Default
+    private List<DomainEvent> domainEvents = new ArrayList<>();
+
+    public void recordEvent(DomainEvent event) {
+        domainEvents.add(event);
+    }
+
+    public List<DomainEvent> getDomainEvents() {
+        return List.copyOf(domainEvents);
+    }
+
+    public void clearDomainEvents() {
+        domainEvents.clear();
+    }
 
     public boolean checkOwnStock(List<StockItem> items, StockChecker checker) {
         return checker.checkOwnStock(this.stock, items);

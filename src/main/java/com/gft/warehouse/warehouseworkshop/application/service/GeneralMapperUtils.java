@@ -3,7 +3,7 @@ package com.gft.warehouse.warehouseworkshop.application.service;
 import com.gft.warehouse.warehouseworkshop.application.dto.LocationDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
-import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
+import com.gft.warehouse.warehouseworkshop.domain.enums.WarehouseType;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
@@ -34,7 +34,7 @@ public abstract class GeneralMapperUtils {
         return WarehouseDTO.builder()
                 .id( warehouseEntity.getId().toString())
                 .name( warehouseEntity.getName() )
-                .type( warehouseEntity.getType().name() )
+                .type( warehouseEntity.getWarehouseType().name() )
                 .location(
                         LocationDTO.builder()
                                 .x( warehouseEntity.getX() )
@@ -55,7 +55,7 @@ public abstract class GeneralMapperUtils {
                                 .build()
                 )
                 .warehouseName( warehouseDTO.getName() )
-                .warehouseType( Type.valueOf( warehouseDTO.getType().toUpperCase() ) )
+                .warehouseType( WarehouseType.valueOf( warehouseDTO.getType().toUpperCase() ) )
                 .warehouseLocation(
                         Location.builder()
                                 .x(warehouseDTO.getLocation().getX())
@@ -73,7 +73,7 @@ public abstract class GeneralMapperUtils {
         return Warehouse.builder()
                 .warehouseId(WarehouseId.builder().id( entity.getId() ).build())
                 .warehouseName( entity.getName() )
-                .warehouseType( entity.getType() )
+                .warehouseType( entity.getWarehouseType() )
                 .warehouseLocation(
                         Location.builder()
                                 .x(entity.getX())
@@ -92,7 +92,7 @@ public abstract class GeneralMapperUtils {
         return WarehouseEntity.builder()
                 .id( warehouse.getWarehouseId().getId() )
                 .name( warehouse.getWarehouseName() )
-                .type( warehouse.getWarehouseType())
+                .warehouseType( warehouse.getWarehouseType())
                 .x( warehouse.getWarehouseLocation().getX() )
                 .y( warehouse.getWarehouseLocation().getY() )
                 .factoryId( warehouse.getFactoryId().getId() )

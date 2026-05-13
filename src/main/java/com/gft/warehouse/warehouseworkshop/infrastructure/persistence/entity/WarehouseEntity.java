@@ -1,6 +1,6 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity;
 
-import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
+import com.gft.warehouse.warehouseworkshop.domain.enums.WarehouseType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +25,7 @@ public class WarehouseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name="type")
-    private Type type;
+    private WarehouseType warehouseType;
 
     //Location
     @Column(name="location_x")

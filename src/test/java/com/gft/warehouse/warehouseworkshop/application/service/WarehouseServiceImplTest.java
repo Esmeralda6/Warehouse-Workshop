@@ -4,7 +4,7 @@ import com.gft.warehouse.warehouseworkshop.application.dto.FactoryIdDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.LocationDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
-import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
+import com.gft.warehouse.warehouseworkshop.domain.enums.WarehouseType;
 import com.gft.warehouse.warehouseworkshop.domain.events.DomainEvent;
 import com.gft.warehouse.warehouseworkshop.domain.events.WarehouseCreatedEvent;
 import com.gft.warehouse.warehouseworkshop.domain.ports.EventPublisher;
@@ -33,7 +33,6 @@ import java.util.stream.Stream;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @ExtendWith(MockitoExtension.class)
 class WarehouseServiceImplTest {
@@ -53,7 +52,7 @@ class WarehouseServiceImplTest {
                 List.of(
                         Warehouse.builder()
                                 .warehouseId(WarehouseId.builder().id(UUID.randomUUID()).build())
-                                .warehouseType(Type.FACTORY)
+                                .warehouseType(WarehouseType.FACTORY)
                                 .warehouseName("warehouse_1")
                                 .warehouseLocation( Location.builder().x(1).y(1).build())
                                 .factoryId(
@@ -80,7 +79,7 @@ class WarehouseServiceImplTest {
         when( warehouseRepository.findById(id)).thenReturn(
                 Optional.ofNullable(Warehouse.builder()
                         .warehouseId(id)
-                        .warehouseType(Type.FACTORY)
+                        .warehouseType(WarehouseType.FACTORY)
                         .warehouseLocation( Location.builder().x(1).y(1).build())
                         .factoryId(
                                 FactoryId.builder()
@@ -126,7 +125,7 @@ class WarehouseServiceImplTest {
                 WarehouseEntity.builder()
                         .id( UUID.randomUUID() )
                         .name( warehouseDTO.getName() )
-                        .type(Type.valueOf(warehouseDTO.getType()))
+                        .warehouseType(WarehouseType.valueOf(warehouseDTO.getType()))
                         .x( warehouseDTO.getLocation().getX() )
                         .y( warehouseDTO.getLocation().getY() )
                         .build()
@@ -187,7 +186,7 @@ class WarehouseServiceImplTest {
                 WarehouseEntity.builder()
                         .id( warehouseId.getId() )
                         .name( warehouseDTO.getName() )
-                        .type(Type.valueOf(warehouseDTO.getType()))
+                        .warehouseType(WarehouseType.valueOf(warehouseDTO.getType()))
                         .x( warehouseDTO.getLocation().getX() )
                         .y( warehouseDTO.getLocation().getY() )
                         .build()
@@ -258,12 +257,12 @@ class WarehouseServiceImplTest {
 
     @Test
     void findAvailableWarehouse() {
-        WarehouseId warehouseId = WarehouseId.builder().id(UUID.randomUUID()).build();String id = "id_1";
+        WarehouseId warehouseId = WarehouseId.builder().id(UUID.randomUUID()).build();
 
         when( warehouseRepository.findAvailable()).thenReturn(
                 Optional.of( Warehouse.builder()
                         .warehouseId( warehouseId )
-                        .warehouseType( Type.FACTORY )
+                        .warehouseType( WarehouseType.FACTORY )
                         .warehouseLocation( Location.builder().x(1).y(1).build())
                         .factoryId(
                                 FactoryId.builder().id(null).build()
@@ -296,7 +295,7 @@ class WarehouseServiceImplTest {
         when(warehouseRepository.save(Mockito.any( Warehouse.class))).thenReturn(
                 WarehouseEntity.builder()
                         .id( warehouseId.getId() )
-                        .type( Type.FACTORY)
+                        .warehouseType( WarehouseType.FACTORY)
                         .factoryId( UUID.fromString(factoryId.getFactoryId()) )
                         .build()
         );
@@ -339,7 +338,7 @@ class WarehouseServiceImplTest {
                 WarehouseEntity.builder()
                         .id( UUID.randomUUID() )
                         .name( warehouseDTO.getName() )
-                        .type(Type.valueOf(warehouseDTO.getType()))
+                        .warehouseType(WarehouseType.valueOf(warehouseDTO.getType()))
                         .x( warehouseDTO.getLocation().getX() )
                         .y( warehouseDTO.getLocation().getY() )
                         .build()

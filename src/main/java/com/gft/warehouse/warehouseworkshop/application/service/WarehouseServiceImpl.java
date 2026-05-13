@@ -3,7 +3,7 @@ package com.gft.warehouse.warehouseworkshop.application.service;
 import com.gft.warehouse.warehouseworkshop.application.dto.FactoryIdDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
-import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
+import com.gft.warehouse.warehouseworkshop.domain.enums.WarehouseType;
 import com.gft.warehouse.warehouseworkshop.domain.events.WarehouseCreatedEvent;
 import com.gft.warehouse.warehouseworkshop.domain.ports.EventPublisher;
 import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
@@ -47,13 +47,18 @@ public class WarehouseServiceImpl implements WarehouseService{
     public String saveWarehouse(WarehouseDTO warehouseDTO) {
         Warehouse warehouse = GeneralMapperUtils.toDomain(warehouseDTO);
 
-        warehouse.recordEvent(new WarehouseCreatedEvent(
-                warehouse.getWarehouseId().getId().toString(),
-                warehouse.getWarehouseName(),
-                warehouse.getWarehouseType().name()
-        ));
-        warehouse.getDomainEvents().forEach(eventPublisher::publish);
-        warehouse.clearDomainEvents();
+        try {
+            warehouse.recordEvent(new WarehouseCreatedEvent(
+                    warehouse.getWarehouseId().getId().toString(),
+                    warehouse.getWarehouseName(),
+                    warehouse.getWarehouseType().name()
+            ));
+            warehouse.getDomainEvents().forEach(eventPublisher::publish);
+            warehouse.clearDomainEvents();
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+
       
         WarehouseEntity savedWarehouse = warehouseRepository.save(
                 warehouse
@@ -66,7 +71,7 @@ public class WarehouseServiceImpl implements WarehouseService{
                 WarehouseId.builder().id(UUID.fromString(id)).build())
                 .map(updatedWarehouse -> {
                     updatedWarehouse.setWarehouseName( warehouseDTO.getName() );
-                    updatedWarehouse.setWarehouseType( Type.valueOf(warehouseDTO.getType()) );
+                    updatedWarehouse.setWarehouseType( WarehouseType.valueOf(warehouseDTO.getType()) );
                     updatedWarehouse.setWarehouseLocation(
                             Location.builder()
                                     .x(warehouseDTO.getLocation().getX())

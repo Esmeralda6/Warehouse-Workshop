@@ -1,6 +1,6 @@
 package com.gft.warehouse.warehouseworkshop.domain.aggregates;
 
-import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
+import com.gft.warehouse.warehouseworkshop.domain.enums.WarehouseType;
 import com.gft.warehouse.warehouseworkshop.domain.events.DomainEvent;
 import com.gft.warehouse.warehouseworkshop.domain.events.WarehouseCreatedEvent;
 import com.gft.warehouse.warehouseworkshop.domain.exceptions.InsuficientStockException;
@@ -37,7 +37,7 @@ class WarehouseTest {
         return Warehouse.builder()
                 .warehouseId(WarehouseId.builder().id(UUID.randomUUID()).build())
                 .warehouseName("Warehouse_1")
-                .warehouseType(Type.PRODUCTION)
+                .warehouseType(WarehouseType.PRODUCTION)
                 .warehouseLocation(Location.builder().x(1).y(1).build())
                 .stock(stock)
                 .build();
@@ -48,14 +48,14 @@ class WarehouseTest {
                 Arguments.of(Warehouse.builder()
                         .warehouseId(WarehouseId.builder().id(UUID.randomUUID()).build())
                         .warehouseName("Warehouse_1")
-                        .warehouseType( Type.PRODUCTION )
+                        .warehouseType( WarehouseType.PRODUCTION )
                         .warehouseLocation( Location.builder().x(1).y(1).build())
                         .factoryId(FactoryId.builder().id(UUID.randomUUID()).build())
                         .build()),
                 Arguments.of(Warehouse.builder()
                         .warehouseId(WarehouseId.builder().id(UUID.randomUUID()).build())
                         .warehouseName("Warehouse_1")
-                        .warehouseType( Type.PRODUCTION )
+                        .warehouseType( WarehouseType.PRODUCTION )
                         .warehouseLocation( Location.builder().x(1).y(1).build())
                         .build())
         );
@@ -67,7 +67,7 @@ class WarehouseTest {
         assertThat(warehouse).isInstanceOf(Warehouse.class);
         assertThat(warehouse.getWarehouseId()).isInstanceOf(WarehouseId.class).isNotNull();
         assertThat(warehouse.getWarehouseName()).isInstanceOf(String.class).isNotNull();
-        assertThat(warehouse.getWarehouseType()).isInstanceOf(Type.class).isNotNull();
+        assertThat(warehouse.getWarehouseType()).isInstanceOf(WarehouseType.class).isNotNull();
         assertThat(warehouse.getWarehouseLocation()).isInstanceOf(Location.class).isNotNull();
     }
 

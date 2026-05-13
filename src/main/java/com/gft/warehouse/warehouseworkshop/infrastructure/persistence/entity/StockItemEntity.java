@@ -25,8 +25,9 @@ public class StockItemEntity {
     @Column(name="quantity")
     private int quantity;
 
-    @Column(name="warehouse_id")
-    private UUID warehouseId;
+    @ManyToOne
+    @JoinColumn(name = "warehouse_id")
+    private WarehouseEntity warehouseId;
 
     @Column(name="minimum_quantity")
     private int minimumQuantity;

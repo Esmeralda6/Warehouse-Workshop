@@ -1,4 +1,4 @@
-package com.gft.warehouse.warehouseworkshop.application.service;
+package com.gft.warehouse.warehouseworkshop.application.service.warehouse;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.LocationDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.UUID;
 
 @Slf4j
-public abstract class GeneralMapperUtils {
+public abstract class WarehouseMapperUtils {
     public static WarehouseDTO toDTO(Warehouse warehouse){
 
         return WarehouseDTO.builder()

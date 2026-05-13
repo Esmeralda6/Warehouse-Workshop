@@ -48,6 +48,7 @@ public class WarehouseServiceImpl implements WarehouseService{
         warehouse.recordEvent(new WarehouseCreatedEvent(
                 warehouse.getWarehouseId().getId().toString(),
                 warehouse.getWarehouseName(),
+                warehouse.getWarehouseLocation(),
                 warehouse.getWarehouseType().name()
         ));
         warehouse.getDomainEvents().forEach(eventPublisher::publish);

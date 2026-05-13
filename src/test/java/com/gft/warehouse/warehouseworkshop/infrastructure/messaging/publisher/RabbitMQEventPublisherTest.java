@@ -1,6 +1,7 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.messaging.publisher;
 
 import com.gft.warehouse.warehouseworkshop.domain.events.WarehouseCreatedEvent;
+import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.infrastructure.messaging.config.RabbitMQConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +23,7 @@ class RabbitMQEventPublisherTest {
 
     @Test
     void publish_sendsEventToCorrectExchangeAndRoutingKey() {
-        WarehouseCreatedEvent event = new WarehouseCreatedEvent("wh-1", "Main Warehouse", "FACTORY");
+        WarehouseCreatedEvent event = new WarehouseCreatedEvent("wh-1", "Main Warehouse", Location.builder().x(1).y(1).build(), "FACTORY");
 
         publisher.publish(event);
 

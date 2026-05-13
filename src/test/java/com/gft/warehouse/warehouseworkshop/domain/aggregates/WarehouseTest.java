@@ -163,7 +163,7 @@ class WarehouseTest {
     @Test
     void recordEvent_addsDomainEventToList() {
         Warehouse warehouse = buildWarehouse(new ArrayList<>());
-        DomainEvent event = new WarehouseCreatedEvent("wh-1", "Warehouse_1", "PRODUCTION");
+        DomainEvent event = new WarehouseCreatedEvent("wh-1", "Warehouse_1", Location.builder().x(1).y(1).build(), "PRODUCTION");
 
         warehouse.recordEvent(event);
 
@@ -173,19 +173,19 @@ class WarehouseTest {
     @Test
     void getDomainEvents_returnsUnmodifiableCopy() {
         Warehouse warehouse = buildWarehouse(new ArrayList<>());
-        warehouse.recordEvent(new WarehouseCreatedEvent("wh-1", "Warehouse_1", "PRODUCTION"));
+        warehouse.recordEvent(new WarehouseCreatedEvent("wh-1", "Warehouse_1", Location.builder().x(1).y(1).build(), "PRODUCTION"));
 
         List<DomainEvent> events = warehouse.getDomainEvents();
 
         assertThat(events).hasSize(1);
         org.junit.jupiter.api.Assertions.assertThrows(UnsupportedOperationException.class,
-                () -> events.add(new WarehouseCreatedEvent("wh-2", "Other", "FACTORY")));
+                () -> events.add(new WarehouseCreatedEvent("wh-2", "Other", Location.builder().x(1).y(1).build(), "FACTORY")));
     }
 
     @Test
     void clearDomainEvents_emptiesEventList() {
         Warehouse warehouse = buildWarehouse(new ArrayList<>());
-        warehouse.recordEvent(new WarehouseCreatedEvent("wh-1", "Warehouse_1", "PRODUCTION"));
+        warehouse.recordEvent(new WarehouseCreatedEvent("wh-1", "Warehouse_1", Location.builder().x(1).y(1).build(), "PRODUCTION"));
 
         warehouse.clearDomainEvents();
 

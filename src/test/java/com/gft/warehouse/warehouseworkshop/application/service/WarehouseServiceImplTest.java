@@ -132,5 +132,7 @@ class WarehouseServiceImplTest {
         WarehouseCreatedEvent event = (WarehouseCreatedEvent) captor.getValue();
         assertThat(event.getWarehouseName()).isEqualTo("warehouse_1");
         assertThat(event.getWarehouseType()).isEqualTo("FACTORY");
+        assertThat(event.getLocation().getX()).isEqualTo(1);
+        assertThat(event.getLocation().getY()).isEqualTo(2);
     }
 }

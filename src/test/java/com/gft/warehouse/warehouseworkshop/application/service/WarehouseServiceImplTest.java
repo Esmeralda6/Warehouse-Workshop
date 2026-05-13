@@ -162,7 +162,15 @@ class WarehouseServiceImplTest {
                             .location(LocationDTO.builder().x(1).y(2).build())
                             .type("FACTORY")
                             .factoryId( UUID.randomUUID().toString() )
-                            .build())
+                            .build()),
+                Arguments.of(
+                        UUID.randomUUID().toString(),
+                        WarehouseDTO.builder()
+                                .name("warehouse_1")
+                                .location(LocationDTO.builder().x(1).y(2).build())
+                                .type("FACTORY")
+                                .factoryId( "" )
+                                .build())
         );
     }
     @ParameterizedTest
@@ -305,27 +313,39 @@ class WarehouseServiceImplTest {
     @Test
     void assignFactoryIdWhenNotFound() {
         WarehouseId warehouseId = WarehouseId.builder().id(UUID.randomUUID()).build();
-        FactoryIdDTO factoryId = FactoryIdDTO.builder().factoryId( UUID.randomUUID().toString()  ).build();
-        when( warehouseRepository.findById( warehouseId ) ).thenReturn(
+        FactoryIdDTO factoryId = FactoryIdDTO.builder().factoryId(UUID.randomUUID().toString()).build();
+        when(warehouseRepository.findById(warehouseId)).thenReturn(
                 Optional.empty()
         );
 
-        var result = warehouseService.assignFactoryId( warehouseId.getId().toString(), factoryId);
+        var result = warehouseService.assignFactoryId(warehouseId.getId().toString(), factoryId);
 
-        assertThat( result )
+        assertThat(result)
                 .isNotNull()
                 .isNotBlank();
-        assertThat( result )
-                .contains( warehouseId.getId() + " not found.");
+        assertThat(result)
+                .contains(warehouseId.getId() + " not found.");
+    }
     @Test
     void saveWarehouse_publishesWarehouseCreatedEvent() {
-        WarehouseDTO dto = WarehouseDTO.builder()
+        WarehouseDTO warehouseDTO = WarehouseDTO.builder()
+                .id(UUID.randomUUID().toString())
                 .name("warehouse_1")
                 .location(LocationDTO.builder().x(1).y(2).build())
                 .type("FACTORY")
                 .build();
 
-        warehouseService.saveWarehouse(dto);
+        when(warehouseRepository.save( Mockito.any( Warehouse.class))).thenReturn(
+                WarehouseEntity.builder()
+                        .id( UUID.randomUUID() )
+                        .name( warehouseDTO.getName() )
+                        .type(Type.valueOf(warehouseDTO.getType()))
+                        .x( warehouseDTO.getLocation().getX() )
+                        .y( warehouseDTO.getLocation().getY() )
+                        .build()
+        );
+
+        warehouseService.saveWarehouse(warehouseDTO);
 
         ArgumentCaptor<DomainEvent> captor = ArgumentCaptor.forClass(DomainEvent.class);
         verify(eventPublisher).publish(captor.capture());

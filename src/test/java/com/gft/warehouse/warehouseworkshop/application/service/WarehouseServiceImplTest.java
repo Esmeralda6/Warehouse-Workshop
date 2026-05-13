@@ -3,9 +3,12 @@ package com.gft.warehouse.warehouseworkshop.application.service;
 import com.gft.warehouse.warehouseworkshop.application.dto.LocationDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
+import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
 import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
+import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
+import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,6 +16,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -38,8 +42,13 @@ class WarehouseServiceImplTest {
                 List.of(
                         Warehouse.builder()
                                 .warehouseId(WarehouseId.builder().id(UUID.randomUUID()).build())
+                                .warehouseType(Type.FACTORY)
                                 .warehouseName("warehouse_1")
                                 .warehouseLocation( Location.builder().x(1).y(1).build())
+                                .factoryId(
+                                        FactoryId.builder()
+                                                .id(UUID.randomUUID()).build()
+                                )
                                 .build()
                 )
         );
@@ -60,7 +69,12 @@ class WarehouseServiceImplTest {
         when( warehouseRepository.findById(id)).thenReturn(
                 Optional.ofNullable(Warehouse.builder()
                         .warehouseId(id)
+                        .warehouseType(Type.FACTORY)
                         .warehouseLocation( Location.builder().x(1).y(1).build())
+                        .factoryId(
+                                FactoryId.builder()
+                                        .id(UUID.randomUUID()).build()
+                        )
                         .build())
         );
 
@@ -96,6 +110,18 @@ class WarehouseServiceImplTest {
     @ParameterizedTest
     @MethodSource("providerNullableId")
     void saveWarehouse(WarehouseDTO warehouseDTO) {
+
+
+
+        when(warehouseRepository.save(Mockito.any( Warehouse.class))).thenReturn(
+                WarehouseEntity.builder()
+                        .id( UUID.randomUUID() )
+                        .name( warehouseDTO.getName() )
+                        .type(Type.valueOf(warehouseDTO.getType()))
+                        .x( warehouseDTO.getLocation().getX() )
+                        .y( warehouseDTO.getLocation().getY() )
+                        .build()
+        );
 
         var result = warehouseService.saveWarehouse(
                 warehouseDTO

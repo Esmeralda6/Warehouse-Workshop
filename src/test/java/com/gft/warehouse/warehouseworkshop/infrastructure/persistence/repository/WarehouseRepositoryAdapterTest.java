@@ -1,6 +1,7 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository;
 
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
+import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
@@ -71,6 +72,10 @@ class WarehouseRepositoryAdapterTest {
                 .warehouseId(WarehouseId.builder().id(UUID.randomUUID()).build())
                 .warehouseName("warehouse_1")
                 .warehouseLocation( Location.builder().x(1).y(1).build())
+                .factoryId(
+                        FactoryId.builder()
+                                .id(UUID.randomUUID()).build()
+                )
                 .build();
 
         warehouseRepository.save( warehouse );

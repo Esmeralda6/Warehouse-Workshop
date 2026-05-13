@@ -1,6 +1,8 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository;
 
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
+import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
+import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
@@ -16,6 +18,7 @@ import java.util.UUID;
 
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @ExtendWith(MockitoExtension.class)
 class WarehouseRepositoryAdapterTest {
@@ -71,16 +74,48 @@ class WarehouseRepositoryAdapterTest {
                 .warehouseId(WarehouseId.builder().id(UUID.randomUUID()).build())
                 .warehouseName("warehouse_1")
                 .warehouseLocation( Location.builder().x(1).y(1).build())
+                .factoryId(
+                        FactoryId.builder()
+                                .id(UUID.randomUUID()).build()
+                )
                 .build();
 
         warehouseRepository.save( warehouse );
         //No tengo claro qué comprobar, hace el coverage igualmente
     }
+
+    @Test
+    void delete() {
+        UUID id = UUID.randomUUID();
+        WarehouseId warehouseId = WarehouseId.builder().id(id).build();
+
+
+        assertThatNoException().isThrownBy( () -> warehouseRepository.delete(warehouseId));
+
+    }
+
+    @Test
+    void findAvailable() {
+        UUID id = UUID.randomUUID();
+        when( warehouseJpaRepository.findByTypeAndFactoryIdNull(Type.FACTORY)).thenReturn(
+                List.of(
+                        WarehouseEntity.builder()
+                                .id( id )
+                                .factoryId(null)
+                                .build()
+                )
+        );
+        var result = warehouseRepository.findAvailable();
+
+        assertThat( result )
+                .isNotNull();
+        assertThat( result.isPresent() )
+                .isTrue();
+        assertThat( result.get() )
+                .isInstanceOf(Warehouse.class);
+        assertThat( result.get().getWarehouseId().getId() )
+                .isEqualTo( id );
+        assertThat( result.get().getFactoryId().getId() )
+                .isNull();
+    }
 }
-/*
-    Warehouse.builder()
-    .warehouseId(WarehouseId.builder().id(UUID.fromString("303b5957-ce82-4dfc-bb27-f38a55d39b15")).build())
-    .warehouseName("warehouse_1")
-    .warehouseLocation( Location.builder().x(1).y(1).build())
-    .build()
-* */

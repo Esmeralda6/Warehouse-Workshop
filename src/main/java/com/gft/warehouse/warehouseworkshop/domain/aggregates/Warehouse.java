@@ -8,18 +8,20 @@ import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Builder
 @Getter
+@Setter
 public class Warehouse {
     private final WarehouseId warehouseId;
-    private final String warehouseName;
-    private final Type warehouseType;
-    private final Location warehouseLocation;
-    private final FactoryId factoryId;
+    private String warehouseName;
+    private Type warehouseType;
+    private Location warehouseLocation;
+    private FactoryId factoryId;
 
     @Builder.Default
     private List<StockItem> stock = new ArrayList<>();

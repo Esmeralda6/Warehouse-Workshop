@@ -15,11 +15,4 @@ class FactoryIdTest {
 
         assertThat(factoryId).isNotNull().isInstanceOf(FactoryId.class);
     }
-
-    @Test
-    void shouldThrowExceptionWhenIdIsNull() {
-        assertThatThrownBy(() -> FactoryId.builder().id(null).build())
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("FactoryId cannot be null");
-    }
 }

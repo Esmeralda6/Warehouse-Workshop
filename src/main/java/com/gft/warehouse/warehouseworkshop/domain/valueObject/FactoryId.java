@@ -10,15 +10,6 @@ import java.util.UUID;
 public class FactoryId {
     UUID id;
 
-    public FactoryId(UUID id) {
-        this.id = validate(id);
-    }
-
-    private UUID validate(UUID id){
-        if (id == null) {
-            throw new IllegalArgumentException("FactoryId cannot be null");
-        }
-        return id;
-    }
-
+    //No validations:
+    //FactoryId.id can be null, so that the warehouse is created first and afterwards a Factory latches onto this.
 }

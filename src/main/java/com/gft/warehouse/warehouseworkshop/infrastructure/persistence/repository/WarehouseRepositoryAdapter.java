@@ -1,8 +1,9 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository;
 
+import com.gft.warehouse.warehouseworkshop.application.service.GeneralMapperUtils;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
+import com.gft.warehouse.warehouseworkshop.domain.enums.WarehouseType;
 import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
-import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
 import lombok.RequiredArgsConstructor;
@@ -17,52 +18,44 @@ public class WarehouseRepositoryAdapter implements WarehouseRepository {
 
     private final WarehouseJpaRepository warehouseJpaRepository;
 
-
     @Override
     public List<Warehouse> findAll() {
         return warehouseJpaRepository.findAll()
                 .stream()
-                .map(this::toDomain)
+                .map(GeneralMapperUtils::toDomain)
                 .toList();
     }
 
     @Override
     public Optional<Warehouse> findById(WarehouseId warehouseId) {
         return warehouseJpaRepository.findById( warehouseId.getId() )
-                .map(this::toDomain);
+                .map(GeneralMapperUtils::toDomain);
     }
 
     @Override
-    public void save(Warehouse warehouse) {
-        warehouseJpaRepository.save(
-                toEntity( warehouse )
+    public WarehouseEntity save(Warehouse warehouse) {
+        return warehouseJpaRepository.save(
+                GeneralMapperUtils.toEntity( warehouse )
         );
     }
 
-    //MAPPERS
-
-    private WarehouseEntity toEntity(Warehouse warehouse){
-        return WarehouseEntity.builder()
-                .id( warehouse.getWarehouseId().getId() )
-                .name( warehouse.getWarehouseName() )
-                .x( warehouse.getWarehouseLocation().getX() )
-                .y( warehouse.getWarehouseLocation().getY() )
-                .type( warehouse.getWarehouseType())
-                .build();
+    @Override
+    public void delete( WarehouseId warehouseId){
+        warehouseJpaRepository.deleteById(
+                warehouseId.getId()
+        );
     }
 
-
-    private Warehouse toDomain(WarehouseEntity entity){
-        return Warehouse.builder()
-                .warehouseId(WarehouseId.builder().id( entity.getId() ).build())
-                .warehouseName( entity.getName() )
-                .warehouseLocation(
-                        Location.builder()
-                                .x(entity.getX())
-                                .y(entity.getY())
-                                .build()
+    @Override
+    public Optional<Warehouse> findAvailable() {
+        return warehouseJpaRepository
+                .findByWarehouseTypeAndFactoryIdNull(
+                    WarehouseType.FACTORY
                 )
-                .warehouseType( entity.getType() )
-                .build();
+                .stream()
+                .findFirst()
+                .map(GeneralMapperUtils::toDomain);
     }
+
+
 }

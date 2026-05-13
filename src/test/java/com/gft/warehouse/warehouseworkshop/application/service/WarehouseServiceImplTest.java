@@ -257,7 +257,7 @@ class WarehouseServiceImplTest {
 
     @Test
     void findAvailableWarehouse() {
-        WarehouseId warehouseId = WarehouseId.builder().id(UUID.randomUUID()).build();String id = "id_1";
+        WarehouseId warehouseId = WarehouseId.builder().id(UUID.randomUUID()).build();
 
         when( warehouseRepository.findAvailable()).thenReturn(
                 Optional.of( Warehouse.builder()

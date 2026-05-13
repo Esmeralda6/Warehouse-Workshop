@@ -73,15 +73,18 @@ jobs:
 
   # Passes tests with 100% coverage
   build-and-coverage:
-    name: Build and check coverage
+    name: Build and check coverage (Java ${{ matrix.java-version }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ '21', '25' ]
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Java 21
+      - name: Set up Java ${{ matrix.java-version }}
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: ${{ matrix.java-version }}
           distribution: 'temurin'
 
       - name: Cache Maven packages

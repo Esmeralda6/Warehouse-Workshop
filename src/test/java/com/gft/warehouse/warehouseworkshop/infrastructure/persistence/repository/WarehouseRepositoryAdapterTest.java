@@ -1,7 +1,7 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository;
 
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
-import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
+import com.gft.warehouse.warehouseworkshop.domain.enums.WarehouseType;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
@@ -97,7 +97,7 @@ class WarehouseRepositoryAdapterTest {
     @Test
     void findAvailable() {
         UUID id = UUID.randomUUID();
-        when( warehouseJpaRepository.findByTypeAndFactoryIdNull(Type.FACTORY)).thenReturn(
+        when( warehouseJpaRepository.findByWarehouseTypeAndFactoryIdNull(WarehouseType.FACTORY)).thenReturn(
                 List.of(
                         WarehouseEntity.builder()
                                 .id( id )

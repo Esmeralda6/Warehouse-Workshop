@@ -1,6 +1,6 @@
 package com.gft.warehouse.warehouseworkshop.domain.enums;
 
-public enum Type {
+public enum WarehouseType {
     PRODUCTION,
     FACTORY,
     CLIENT

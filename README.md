@@ -338,7 +338,7 @@ flowchart TD
 #### Map
 | Direction | Event | Payload fields |
 |---|---|---|
-| Receives from Warehouse | `warehouse.registered.v1` | `warehouseId: UUID, name: String, location: {x,y}, warehouseType: enum` |
+| Receives from Warehouse | `warehouse.registered.v1` | `warehouseId: UUID, name: String, location: {x,y}, type: enum` |
 
 #### Trucks
 | Direction | Event | Payload fields |

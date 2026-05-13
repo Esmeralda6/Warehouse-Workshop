@@ -2,7 +2,7 @@ package com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repositor
 
 import com.gft.warehouse.warehouseworkshop.application.service.GeneralMapperUtils;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
-import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
+import com.gft.warehouse.warehouseworkshop.domain.enums.WarehouseType;
 import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
@@ -49,8 +49,8 @@ public class WarehouseRepositoryAdapter implements WarehouseRepository {
     @Override
     public Optional<Warehouse> findAvailable() {
         return warehouseJpaRepository
-                .findByTypeAndFactoryIdNull(
-                    Type.FACTORY
+                .findByWarehouseTypeAndFactoryIdNull(
+                    WarehouseType.FACTORY
                 )
                 .stream()
                 .findFirst()

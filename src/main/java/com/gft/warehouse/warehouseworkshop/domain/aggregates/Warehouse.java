@@ -1,6 +1,6 @@
 package com.gft.warehouse.warehouseworkshop.domain.aggregates;
 
-import com.gft.warehouse.warehouseworkshop.domain.enums.Type;
+import com.gft.warehouse.warehouseworkshop.domain.enums.WarehouseType;
 import com.gft.warehouse.warehouseworkshop.domain.events.DomainEvent;
 import com.gft.warehouse.warehouseworkshop.domain.services.StockChecker;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
@@ -19,7 +19,7 @@ import java.util.List;
 public class Warehouse {
     private final WarehouseId warehouseId;
     private String warehouseName;
-    private Type warehouseType;
+    private WarehouseType warehouseType;
     private Location warehouseLocation;
     private FactoryId factoryId;
 

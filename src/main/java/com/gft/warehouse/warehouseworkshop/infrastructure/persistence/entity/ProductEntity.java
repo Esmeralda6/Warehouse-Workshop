@@ -1,14 +1,13 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -24,4 +23,7 @@ public class ProductEntity {
 
     @Column(name="product_name")
     private String productName;
+
+    @OneToMany(mappedBy = "productId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StockItemEntity> stockItems = new ArrayList<>();
 }

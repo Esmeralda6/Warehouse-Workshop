@@ -22,6 +22,9 @@ public class StockItemRepositoryAdapter implements StockItemRepository {
     @Autowired
     private final WarehouseJpaRepository warehouseJpaRepository;
 
+    @Autowired
+    private final ProductJpaRepository productJpaRepository;
+
     @Override
     public List<StockItem> findAll() {
         return stockItemJpaRepository.findAll()
@@ -39,7 +42,7 @@ public class StockItemRepositoryAdapter implements StockItemRepository {
     @Override
     public StockItemEntity save(StockItem stockItem) {
         return stockItemJpaRepository.save(
-                StockItemMapperUtils.toEntity( stockItem, warehouseJpaRepository )
+                StockItemMapperUtils.toEntity( stockItem, productJpaRepository, warehouseJpaRepository )
         );
     }
 

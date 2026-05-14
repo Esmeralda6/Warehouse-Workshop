@@ -11,13 +11,10 @@ import lombok.Value;
 public class StockItemDTO {
 
     String id;
-
     @NotBlank
     String productId;
     int quantity;
-
     @NotBlank
     String warehouseId;
-
     int minimumQuantity;
 }

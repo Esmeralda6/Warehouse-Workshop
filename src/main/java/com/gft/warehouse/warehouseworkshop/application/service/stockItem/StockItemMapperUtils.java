@@ -3,8 +3,10 @@ package com.gft.warehouse.warehouseworkshop.application.service.stockItem;
 import com.gft.warehouse.warehouseworkshop.application.dto.StockItemDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.StockItem;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.*;
+import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.ProductEntity;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.StockItemEntity;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
+import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository.ProductJpaRepository;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository.WarehouseJpaRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,9 +30,9 @@ public abstract class StockItemMapperUtils {
 
         return StockItemDTO.builder()
                 .id( stockItemEntity.getId().toString() )
-                .productId( stockItemEntity.getProductId().toString())
+                .productId( stockItemEntity.getProductId().getId().toString())
                 .quantity( stockItemEntity.getQuantity() )
-                .warehouseId( stockItemEntity.getWarehouseId().toString() )
+                .warehouseId( stockItemEntity.getWarehouseId().getId().toString() )
                 .minimumQuantity( stockItemEntity.getMinimumQuantity() )
                 .build();
     }
@@ -79,7 +81,7 @@ public abstract class StockItemMapperUtils {
                 )
                 .productId(
                         ProductId.builder()
-                                .id( entity.getProductId() )
+                                .id( entity.getProductId().getId() )
                                 .build()
                 )
                 .quantity(
@@ -102,19 +104,24 @@ public abstract class StockItemMapperUtils {
                 .build();
     }
 
-    public static StockItemEntity toEntity(StockItem stockItem, WarehouseJpaRepository warehouseJpaRepository){
+    public static StockItemEntity toEntity(StockItem stockItem, ProductJpaRepository productJpaRepository, WarehouseJpaRepository warehouseJpaRepository){
         return StockItemEntity.builder()
                 .id( stockItem.getStockItemId().getId() )
-                .productId( stockItem.getProductId().getId() )
+                .productId( getEntityById( stockItem.getProductId(), productJpaRepository) )
                 .quantity( stockItem.getQuantity().getValue() )
                 .warehouseId( getEntityById( stockItem.getWarehouseId(), warehouseJpaRepository ) )
                 .minimumQuantity( stockItem.getMinimumQuantityRule().getValue() )
                 .build();
     }
 
-    //EXPERIMENT
+    //StockItemEntity holds other Entities, while the domain object StockItem only holds the ids,
+    // meaning in order to map the full information of the entity we need to obtain it through its repository
     private static WarehouseEntity getEntityById(WarehouseId warehouseId, WarehouseJpaRepository warehouseJpaRepository ){
         WarehouseEntity warehouseEntity = warehouseJpaRepository.findById( warehouseId.getId() ).orElseThrow();
         return warehouseEntity;
+    }
+    private static ProductEntity getEntityById(ProductId productId, ProductJpaRepository productJpaRepository){
+        ProductEntity productEntity = productJpaRepository.findById( productId.getId() ).orElseThrow();
+        return productEntity;
     }
 }

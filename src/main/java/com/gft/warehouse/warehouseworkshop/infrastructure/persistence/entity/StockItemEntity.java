@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Entity
-@Table(name = "stockItems")
+@Table(name = "stockItems", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"product_id", "warehouse_id"})
+})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,8 +21,9 @@ public class StockItemEntity {
     @Id
     private UUID id;
 
-    @Column(name="product_id")
-    private UUID productId;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private ProductEntity productId;
 
     @Column(name="quantity")
     private int quantity;

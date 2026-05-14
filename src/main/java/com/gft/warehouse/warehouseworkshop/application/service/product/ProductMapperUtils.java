@@ -14,7 +14,7 @@ public abstract class ProductMapperUtils {
     public static ProductDTO toDTO(Product product){
 
         return ProductDTO.builder()
-                .id( product.getProductId().toString() )
+                .id( product.getProductId().getId().toString() )
                 .name(product.getProductName() )
                 .build();
     }

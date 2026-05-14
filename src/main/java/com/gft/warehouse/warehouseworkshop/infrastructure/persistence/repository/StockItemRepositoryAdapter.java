@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
-@RequiredArgsConstructor
+    @Repository
+    @RequiredArgsConstructor
 public class StockItemRepositoryAdapter implements StockItemRepository {
 
     @Autowired

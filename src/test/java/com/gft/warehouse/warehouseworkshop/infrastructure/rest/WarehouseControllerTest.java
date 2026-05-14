@@ -2,7 +2,7 @@ package com.gft.warehouse.warehouseworkshop.infrastructure.rest;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.FactoryIdDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
-import com.gft.warehouse.warehouseworkshop.application.service.WarehouseService;
+import com.gft.warehouse.warehouseworkshop.application.service.warehouse.WarehouseService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

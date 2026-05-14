@@ -1,6 +1,6 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository;
 
-import com.gft.warehouse.warehouseworkshop.application.service.GeneralMapperUtils;
+import com.gft.warehouse.warehouseworkshop.application.service.warehouse.WarehouseMapperUtils;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
 import com.gft.warehouse.warehouseworkshop.domain.enums.WarehouseType;
 import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
@@ -22,20 +22,20 @@ public class WarehouseRepositoryAdapter implements WarehouseRepository {
     public List<Warehouse> findAll() {
         return warehouseJpaRepository.findAll()
                 .stream()
-                .map(GeneralMapperUtils::toDomain)
+                .map(WarehouseMapperUtils::toDomain)
                 .toList();
     }
 
     @Override
     public Optional<Warehouse> findById(WarehouseId warehouseId) {
         return warehouseJpaRepository.findById( warehouseId.getId() )
-                .map(GeneralMapperUtils::toDomain);
+                .map(WarehouseMapperUtils::toDomain);
     }
 
     @Override
     public WarehouseEntity save(Warehouse warehouse) {
         return warehouseJpaRepository.save(
-                GeneralMapperUtils.toEntity( warehouse )
+                WarehouseMapperUtils.toEntity( warehouse )
         );
     }
 
@@ -54,7 +54,7 @@ public class WarehouseRepositoryAdapter implements WarehouseRepository {
                 )
                 .stream()
                 .findFirst()
-                .map(GeneralMapperUtils::toDomain);
+                .map(WarehouseMapperUtils::toDomain);
     }
 
 

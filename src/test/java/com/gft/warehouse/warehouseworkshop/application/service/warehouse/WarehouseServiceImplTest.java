@@ -1,4 +1,4 @@
-package com.gft.warehouse.warehouseworkshop.application.service;
+package com.gft.warehouse.warehouseworkshop.application.service.warehouse;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.FactoryIdDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.LocationDTO;

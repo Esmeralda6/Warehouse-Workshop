@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -36,8 +38,6 @@ public class WarehouseEntity {
     @Column(name = "factory_id")
     private UUID factoryId;
 
-
-
-
-
+    @OneToMany(mappedBy = "warehouseId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StockItemEntity> stockItems = new ArrayList<>();
 }

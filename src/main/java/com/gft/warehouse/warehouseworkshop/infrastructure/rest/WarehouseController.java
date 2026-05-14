@@ -2,13 +2,11 @@ package com.gft.warehouse.warehouseworkshop.infrastructure.rest;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.FactoryIdDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
-import com.gft.warehouse.warehouseworkshop.application.service.WarehouseService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.gft.warehouse.warehouseworkshop.application.service.warehouse.WarehouseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 

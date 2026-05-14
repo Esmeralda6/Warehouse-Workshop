@@ -1,4 +1,4 @@
-package com.gft.warehouse.warehouseworkshop.application.service;
+package com.gft.warehouse.warehouseworkshop.application.service.warehouse;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.LocationDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.UUID;
 
 @Slf4j
-public abstract class GeneralMapperUtils {
+public abstract class WarehouseMapperUtils {
     public static WarehouseDTO toDTO(Warehouse warehouse){
 
         return WarehouseDTO.builder()
@@ -45,13 +45,10 @@ public abstract class GeneralMapperUtils {
     }
 
     public static Warehouse toDomain(WarehouseDTO warehouseDTO){
-        UUID warehouseId = warehouseDTO.getId() != null ?
-                UUID.fromString(warehouseDTO.getId())
-                : UUID.randomUUID();
         return Warehouse.builder()
                 .warehouseId(
                         WarehouseId.builder()
-                                .id(warehouseId)
+                                .id( UUID.fromString( warehouseDTO.getId() ) )
                                 .build()
                 )
                 .warehouseName( warehouseDTO.getName() )
@@ -64,7 +61,7 @@ public abstract class GeneralMapperUtils {
                 )
                 .factoryId(
                         FactoryId.builder()
-                                .id(nullableIdToUuid(warehouseDTO.getId()))
+                                .id( nullableIdToUuid( warehouseDTO.getFactoryId() ))
                                 .build() )
                 .build();
     }

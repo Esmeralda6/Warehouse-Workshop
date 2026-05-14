@@ -217,6 +217,7 @@ flowchart TD
 | ShipmentRequested | `shipment.requested.v1` | `warehouses.exchange` | Trucks |
 | WarehouseOrderBlocked | `warehouse.order.blocked.v1` | `warehouses.exchange` | Reporting |
 | MaterialsGiven | `materials.given.v1` | `warehouses.exchange` | Factory |
+| ProductsUpdated | `product.catalogue.updated.v1` | `warehouses.exchange` | Factory |
 
 #### `warehouse.registered.v1`
 ```json
@@ -267,9 +268,21 @@ flowchart TD
 #### `materials.given.v1`
 ```json
 {
+  "orderId" : "uuid"
   "items": [
     { "productId": "uuid", "quantity": 0 }
   ]
+}
+```
+
+### `product.catalogue.updated.v1`
+```json
+{
+  "status" : "string",
+  "product" : {
+        "productId" : "uuid",
+        "productName" : "string"
+    }
 }
 ```
 
@@ -295,6 +308,7 @@ flowchart TD
 #### `product.materials.requested.v1`
 ```json
 {
+  "orderId" : "uuid"
   "items": [
     { "productId": "uuid", "quantity": 0 }
   ]
@@ -334,6 +348,7 @@ flowchart TD
 | Receives from Warehouse | `materials.given.v1` | `items[]{productId: UUID, quantity: int}` |
 | Sends to Warehouse | `product.materials.requested.v1` | `items[]{productId: UUID, quantity: int}` |
 | Sends to Warehouse | `production.order.completed.v1` | `warehouseOrderId, productionOrderId, productId, factoryAsign, quantity, status` |
+| Receives from Warehouse | `product.catalogue.updated.v1` | `status: string(create || delete), product{productId: UUID, productName: string}` |
 
 #### Map
 | Direction | Event | Payload fields |

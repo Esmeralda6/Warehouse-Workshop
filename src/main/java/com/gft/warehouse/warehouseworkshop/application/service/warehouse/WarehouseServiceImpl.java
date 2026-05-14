@@ -1,6 +1,7 @@
 package com.gft.warehouse.warehouseworkshop.application.service.warehouse;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.FactoryIdDTO;
+import com.gft.warehouse.warehouseworkshop.application.dto.StockItemDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
 import com.gft.warehouse.warehouseworkshop.domain.enums.WarehouseType;
@@ -45,6 +46,16 @@ public class WarehouseServiceImpl implements WarehouseService{
 
 
     public String saveWarehouse(WarehouseDTO warehouseDTO) {
+
+        if ( warehouseDTO.getId() == null || warehouseDTO.getId().isBlank() )
+            warehouseDTO = WarehouseDTO.builder()
+                    .id( UUID.randomUUID().toString() )
+                    .name( warehouseDTO.getName() )
+                    .type( warehouseDTO.getType() )
+                    .location( warehouseDTO.getLocation() )
+                    .factoryId( warehouseDTO.getFactoryId() )
+                    .build();
+
         Warehouse warehouse = WarehouseMapperUtils.toDomain(warehouseDTO);
 
         try {

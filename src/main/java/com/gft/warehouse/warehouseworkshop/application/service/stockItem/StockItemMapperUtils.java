@@ -38,13 +38,10 @@ public abstract class StockItemMapperUtils {
     }
 
     public static StockItem toDomain(StockItemDTO stockItemDTO){
-        UUID stockItemid = stockItemDTO.getId() != null ?
-                UUID.fromString(stockItemDTO.getId())
-                : UUID.randomUUID();
         return StockItem.builder()
                 .stockItemId(
                         StockItemId.builder()
-                                .id( stockItemid )
+                                .id( UUID.fromString( stockItemDTO.getId() ) )
                                 .build()
                 )
                 .productId(

@@ -45,13 +45,10 @@ public abstract class WarehouseMapperUtils {
     }
 
     public static Warehouse toDomain(WarehouseDTO warehouseDTO){
-        UUID warehouseId = warehouseDTO.getId() != null ?
-                UUID.fromString(warehouseDTO.getId())
-                : UUID.randomUUID();
         return Warehouse.builder()
                 .warehouseId(
                         WarehouseId.builder()
-                                .id(warehouseId)
+                                .id( UUID.fromString( warehouseDTO.getId() ) )
                                 .build()
                 )
                 .warehouseName( warehouseDTO.getName() )

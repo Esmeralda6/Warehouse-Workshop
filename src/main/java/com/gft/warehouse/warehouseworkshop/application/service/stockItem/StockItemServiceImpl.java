@@ -47,14 +47,11 @@ public class StockItemServiceImpl implements StockItemService{
                     .minimumQuantity( stockItemDTO.getMinimumQuantity() )
                     .build();
 
-        log.info( stockItemDTO.toString() );
         StockItem stockItem = StockItemMapperUtils.toDomain(stockItemDTO);
-        log.info( stockItem.toString() );
 
         StockItemEntity savedStockItem = stockItemRepository.save(
                 stockItem
         );
-        log.info( savedStockItem.toString() );
         return "Stock Item saved with id: " + savedStockItem.getId().toString();
     }
 

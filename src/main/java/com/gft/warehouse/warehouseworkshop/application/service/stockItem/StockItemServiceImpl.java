@@ -1,9 +1,7 @@
 package com.gft.warehouse.warehouseworkshop.application.service.stockItem;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.StockItemDTO;
-import com.gft.warehouse.warehouseworkshop.application.service.warehouse.WarehouseMapperUtils;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.StockItem;
-import com.gft.warehouse.warehouseworkshop.domain.enums.WarehouseType;
 import com.gft.warehouse.warehouseworkshop.domain.repository.StockItemRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.*;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.StockItemEntity;

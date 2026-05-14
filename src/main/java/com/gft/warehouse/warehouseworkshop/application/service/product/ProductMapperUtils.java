@@ -1,17 +1,9 @@
 package com.gft.warehouse.warehouseworkshop.application.service.product;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.ProductDTO;
-import com.gft.warehouse.warehouseworkshop.application.dto.StockItemDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Product;
-import com.gft.warehouse.warehouseworkshop.domain.aggregates.StockItem;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.ProductId;
-import com.gft.warehouse.warehouseworkshop.domain.valueObject.Quantity;
-import com.gft.warehouse.warehouseworkshop.domain.valueObject.StockItemId;
-import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.ProductEntity;
-import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.StockItemEntity;
-import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
-import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository.WarehouseJpaRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;

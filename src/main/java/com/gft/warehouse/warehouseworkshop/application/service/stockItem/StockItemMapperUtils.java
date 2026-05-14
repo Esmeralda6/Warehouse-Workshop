@@ -2,13 +2,11 @@ package com.gft.warehouse.warehouseworkshop.application.service.stockItem;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.StockItemDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.StockItem;
-import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.*;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.StockItemEntity;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository.WarehouseJpaRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 

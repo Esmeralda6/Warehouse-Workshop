@@ -1,7 +1,6 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository;
 
 import com.gft.warehouse.warehouseworkshop.application.service.stockItem.StockItemMapperUtils;
-import com.gft.warehouse.warehouseworkshop.application.service.warehouse.WarehouseMapperUtils;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.StockItem;
 import com.gft.warehouse.warehouseworkshop.domain.repository.StockItemRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.StockItemId;

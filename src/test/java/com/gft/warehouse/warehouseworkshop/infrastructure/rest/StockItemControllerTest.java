@@ -10,101 +10,116 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class StockItemControllerTest {
 
     @InjectMocks
-    StockItemController stockItemController;
+    private StockItemController stockItemController;
 
     @Mock
-    StockItemService stockItemService;
+    private StockItemService stockItemService;
 
     @Test
     void getStockItems() {
-        when( stockItemService.getStockItems()).thenReturn(
-                List.of()
+        when(stockItemService.getStockItems()).thenReturn(
+                List.of(StockItemDTO.builder()
+                        .id(UUID.randomUUID().toString())
+                        .productId(UUID.randomUUID().toString())
+                        .warehouseId(UUID.randomUUID().toString())
+                        .quantity(10)
+                        .minimumQuantity(2)
+                        .build())
         );
 
         var result = stockItemController.getStockItems();
 
-        assertThat( result )
-                .isNotNull()
-                .hasSizeGreaterThanOrEqualTo( 0 );
+        assertThat(result)
+                .isNotNull();
+        assertThat(result.size())
+                .isEqualTo(1);
+        assertThat(result.getFirst())
+                .isInstanceOf(StockItemDTO.class);
     }
 
     @Test
     void getStockItemById() {
-        String id = "id_1";
-        when( stockItemService.getStockItemById(id) ).thenReturn(
-                Optional.ofNullable(
-                        StockItemDTO.builder().id(id).build()
-                )
+        String id = UUID.randomUUID().toString();
+        when(stockItemService.getStockItemById(id)).thenReturn(
+                Optional.of(StockItemDTO.builder()
+                        .id(id)
+                        .productId(UUID.randomUUID().toString())
+                        .warehouseId(UUID.randomUUID().toString())
+                        .quantity(5)
+                        .minimumQuantity(1)
+                        .build())
         );
 
-        var result = stockItemController.getStockItemById( id );
+        var result = stockItemController.getStockItemById(id);
 
-        assertThat( result )
+        assertThat(result)
                 .isNotNull();
-        assertThat( result.isPresent() )
+        assertThat(result.isPresent())
                 .isTrue();
-        assertThat( result.get().getId() )
-                .isEqualTo( id );
+        assertThat(result.get().getId())
+                .isEqualTo(id);
     }
 
     @Test
     void saveStockItem() {
-        StockItemDTO stockItem =
-                StockItemDTO.builder().id("id_1").build();
+        StockItemDTO stockItemDTO = StockItemDTO.builder()
+                .id(UUID.randomUUID().toString())
+                .productId(UUID.randomUUID().toString())
+                .warehouseId(UUID.randomUUID().toString())
+                .quantity(10)
+                .minimumQuantity(2)
+                .build();
+        when(stockItemService.saveStockItem(stockItemDTO)).thenReturn("Stock Item saved with id: " + stockItemDTO.getId());
 
-        when (stockItemService.saveStockItem( stockItem ))
-                .thenReturn( "StockItem created with id: " + stockItem.getId());
+        var result = stockItemController.saveStockItem(stockItemDTO);
 
-        var result = stockItemController.saveStockItem( stockItem );
-
-        assertThat( result )
+        assertThat(result)
                 .isNotNull()
                 .isNotBlank();
-        assertThat(
-                result.substring( result.length()- stockItem.getId().length()))
-                .isEqualTo( stockItem.getId() );
+        assertThat(result.substring(result.length() - stockItemDTO.getId().length()))
+                .isEqualTo(stockItemDTO.getId());
     }
 
     @Test
     void updateStockItem() {
-        StockItemDTO stockItem =
-                StockItemDTO.builder().id("id_1").build();
-        when (stockItemService.updateStockItem( stockItem.getId(), stockItem ))
-                .thenReturn( "StockItem updated with id: " + stockItem.getId());
+        String id = UUID.randomUUID().toString();
+        StockItemDTO stockItemDTO = StockItemDTO.builder()
+                .productId(UUID.randomUUID().toString())
+                .warehouseId(UUID.randomUUID().toString())
+                .quantity(20)
+                .minimumQuantity(5)
+                .build();
+        when(stockItemService.updateStockItem(id, stockItemDTO)).thenReturn("Stock item with id " + id + " succesfully updated");
 
-        var result = stockItemController.updateStockItem( stockItem.getId(), stockItem );
+        var result = stockItemController.updateStockItem(id, stockItemDTO);
 
-        assertThat( result )
+        assertThat(result)
                 .isNotNull()
                 .isNotBlank();
-        assertThat(
-                result.substring( result.length()- stockItem.getId().length()))
-                .isEqualTo( stockItem.getId() );
+        assertThat(result)
+                .contains(id);
     }
 
     @Test
     void deleteStockItem() {
-        String id = "id_1";
-
-        when (stockItemService.deleteStockItem( id ))
-                .thenReturn( "StockItem deleted with id: " + id);
+        String id = UUID.randomUUID().toString();
+        when(stockItemService.deleteStockItem(id)).thenReturn("Stock item with id " + id + " succesfully deleted.");
 
         var result = stockItemController.deleteStockItem(id);
 
-        assertThat( result )
+        assertThat(result)
                 .isNotNull()
                 .isNotBlank();
-        assertThat(
-                result.substring( result.length()- id.length()))
-                .isEqualTo( id );
+        assertThat(result)
+                .contains(id);
     }
 }

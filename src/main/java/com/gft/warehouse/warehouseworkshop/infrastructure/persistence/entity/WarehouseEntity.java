@@ -38,6 +38,6 @@ public class WarehouseEntity {
     @Column(name = "factory_id")
     private UUID factoryId;
 
-    @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "warehouseId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StockItemEntity> stockItems = new ArrayList<>();
 }

@@ -1,6 +1,7 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository;
 
 import com.gft.warehouse.warehouseworkshop.application.service.stockItem.StockItemMapperUtils;
+import com.gft.warehouse.warehouseworkshop.application.service.warehouse.WarehouseMapperUtils;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.StockItem;
 import com.gft.warehouse.warehouseworkshop.domain.repository.StockItemRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.StockItemId;
@@ -19,6 +20,9 @@ public class StockItemRepositoryAdapter implements StockItemRepository {
     @Autowired
     private final StockItemJpaRepository stockItemJpaRepository;
 
+    @Autowired
+    private final WarehouseJpaRepository warehouseJpaRepository;
+
     @Override
     public List<StockItem> findAll() {
         return stockItemJpaRepository.findAll()
@@ -29,16 +33,21 @@ public class StockItemRepositoryAdapter implements StockItemRepository {
 
     @Override
     public Optional<StockItem> findById(StockItemId stockItemId) {
-        return Optional.empty();
+        return stockItemJpaRepository.findById( stockItemId.getId() )
+                .map(StockItemMapperUtils::toDomain);
     }
 
     @Override
     public StockItemEntity save(StockItem stockItem) {
-        return null;
+        return stockItemJpaRepository.save(
+                StockItemMapperUtils.toEntity( stockItem, warehouseJpaRepository )
+        );
     }
 
     @Override
     public void delete(StockItemId stockItemId) {
-
+        stockItemJpaRepository.deleteById(
+                stockItemId.getId()
+        );
     }
 }

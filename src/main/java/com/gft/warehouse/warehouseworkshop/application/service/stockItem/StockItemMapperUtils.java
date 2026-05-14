@@ -2,14 +2,19 @@ package com.gft.warehouse.warehouseworkshop.application.service.stockItem;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.StockItemDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.StockItem;
+import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.*;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.StockItemEntity;
+import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
+import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository.WarehouseJpaRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 
 @Slf4j
 public abstract class StockItemMapperUtils {
+
     public static StockItemDTO toDTO(StockItem stockItem){
 
         return StockItemDTO.builder()
@@ -99,14 +104,19 @@ public abstract class StockItemMapperUtils {
                 .build();
     }
 
-    public static StockItemEntity toEntity(StockItem stockItem){
+    public static StockItemEntity toEntity(StockItem stockItem, WarehouseJpaRepository warehouseJpaRepository){
         return StockItemEntity.builder()
                 .id( stockItem.getStockItemId().getId() )
-                .productId( stockItem.getStockItemId().getId() )
+                .productId( stockItem.getProductId().getId() )
                 .quantity( stockItem.getQuantity().getValue() )
-                .warehouseId( stockItem.getWarehouseId().getId() )
+                .warehouseId( getEntityById( stockItem.getWarehouseId(), warehouseJpaRepository ) )
                 .minimumQuantity( stockItem.getMinimumQuantityRule().getValue() )
                 .build();
     }
 
+    //EXPERIMENT
+    private static WarehouseEntity getEntityById(WarehouseId warehouseId, WarehouseJpaRepository warehouseJpaRepository ){
+        WarehouseEntity warehouseEntity = warehouseJpaRepository.findById( warehouseId.getId() ).orElseThrow();
+        return warehouseEntity;
+    }
 }

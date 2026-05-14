@@ -7,9 +7,11 @@ import com.gft.warehouse.warehouseworkshop.domain.valueObject.StockItemId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Builder
 @Getter
+@Setter
 public class StockItem {
     private final StockItemId stockItemId;
     private final ProductId productId;

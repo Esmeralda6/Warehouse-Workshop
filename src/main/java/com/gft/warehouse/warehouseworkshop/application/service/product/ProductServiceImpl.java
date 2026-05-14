@@ -1,12 +1,9 @@
 package com.gft.warehouse.warehouseworkshop.application.service.product;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.ProductDTO;
-import com.gft.warehouse.warehouseworkshop.application.service.stockItem.StockItemMapperUtils;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Product;
 import com.gft.warehouse.warehouseworkshop.domain.repository.ProductRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.ProductId;
-import com.gft.warehouse.warehouseworkshop.domain.valueObject.Quantity;
-import com.gft.warehouse.warehouseworkshop.domain.valueObject.StockItemId;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.ProductEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

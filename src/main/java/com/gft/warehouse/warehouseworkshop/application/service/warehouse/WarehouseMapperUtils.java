@@ -61,7 +61,7 @@ public abstract class WarehouseMapperUtils {
                 )
                 .factoryId(
                         FactoryId.builder()
-                                .id(nullableIdToUuid(warehouseDTO.getId()))
+                                .id( nullableIdToUuid( warehouseDTO.getFactoryId() ))
                                 .build() )
                 .build();
     }

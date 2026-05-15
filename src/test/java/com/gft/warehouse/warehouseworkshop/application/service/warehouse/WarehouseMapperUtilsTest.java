@@ -9,8 +9,12 @@ import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -113,6 +117,38 @@ class WarehouseMapperUtilsTest {
         assertThat(result.getWarehouseLocation().getX()).isEqualTo(1);
         assertThat(result.getWarehouseLocation().getY()).isEqualTo(2);
         assertThat(result.getFactoryId().getId()).isEqualTo(factoryUUID);
+    }
+
+    private static Stream<Arguments> providerNullableId() {
+        return Stream.of(
+                Arguments.of(WarehouseDTO.builder()
+                        .id( UUID.randomUUID().toString() )
+                        .name("warehouse_1")
+                        .location(LocationDTO.builder().x(1).y(2).build())
+                        .type("FACTORY")
+                        .factoryId( UUID.randomUUID().toString())
+                        .build()),
+                Arguments.of(WarehouseDTO.builder()
+                        .id( UUID.randomUUID().toString() )
+                        .name("warehouse_3")
+                        .location(LocationDTO.builder().x(1).y(2).build())
+                        .type("FACTORY")
+                        .factoryId(null)
+                        .build())
+        );
+    }
+    @ParameterizedTest
+    @MethodSource("providerNullableId")
+    void toDomain_fromDTO( WarehouseDTO warehouseDTO) {
+
+        Warehouse result = WarehouseMapperUtils.toDomain(warehouseDTO);
+
+        assertThat(result.getWarehouseId().getId()).isEqualTo(UUID.fromString(warehouseDTO.getId()));
+        assertThat(result.getWarehouseName()).isEqualTo( warehouseDTO.getName() );
+        assertThat(result.getWarehouseType()).isEqualTo(WarehouseType.FACTORY);
+        assertThat(result.getWarehouseLocation().getX()).isEqualTo(1);
+        assertThat(result.getWarehouseLocation().getY()).isEqualTo(2);
+        assertThat(result.getFactoryId()).isNotNull();
     }
 
     @Test

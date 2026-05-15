@@ -93,6 +93,13 @@ class StockItemServiceImplTest {
                         .minimumQuantity(2)
                         .build()),
                 Arguments.of(StockItemDTO.builder()
+                        .id("")
+                        .productId(UUID.randomUUID().toString())
+                        .warehouseId(UUID.randomUUID().toString())
+                        .quantity(10)
+                        .minimumQuantity(2)
+                        .build()),
+                Arguments.of(StockItemDTO.builder()
                         .id(UUID.randomUUID().toString())
                         .productId(UUID.randomUUID().toString())
                         .warehouseId(UUID.randomUUID().toString())

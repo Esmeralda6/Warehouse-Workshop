@@ -5,6 +5,7 @@ import com.gft.warehouse.warehouseworkshop.domain.aggregates.Product;
 import com.gft.warehouse.warehouseworkshop.domain.repository.ProductRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.ProductId;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.ProductEntity;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -82,8 +83,12 @@ class ProductServiceImplTest {
                         .name("product_1")
                         .build()),
                 Arguments.of(ProductDTO.builder()
+                        .id("")
+                        .name("product_2")
+                        .build()),
+                Arguments.of(ProductDTO.builder()
                         .id(UUID.randomUUID().toString())
-                        .name("product_1")
+                        .name("product_3")
                         .build())
         );
     }
@@ -93,11 +98,12 @@ class ProductServiceImplTest {
     void saveProduct(ProductDTO productDTO) {
         when(productRepository.save(Mockito.any(Product.class))).thenReturn(
                 ProductEntity.builder()
-                        .id(UUID.randomUUID())
+                        .id( UUID.randomUUID() )
                         .productName(productDTO.getName())
                         .build()
         );
 
+        Assertions.assertDoesNotThrow(() -> productService.saveProduct(productDTO));
         var result = productService.saveProduct(productDTO);
 
         assertThat(result)

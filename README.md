@@ -28,6 +28,11 @@ classDiagram
         +subtract(qty) void
         +hasProduct(productId) boolean
     }
+    class Product {
+        <<entity>>
+        +ProductId productId
+        +String productName
+    }
     class WarehouseId {
         <<value object>>
         +UUID value
@@ -67,6 +72,8 @@ classDiagram
     StockItem --> ProductId
     StockItem --> Quantity
     StockItem --> StockItemId
+    Product "1" --> "1..*" StockItem
+    Product --> ProductId
 ```
 
 ## Module: replenishment

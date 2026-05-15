@@ -176,9 +176,6 @@
                             <formats>
                                 <format>XML</format>
                             </formats>
-                            <includes>
-                                <include>com/gft/warehouse/warehouseworkshop/CoverageMarker*</include>
-                            </includes>
                         </configuration>
                     </execution>
                 </executions>

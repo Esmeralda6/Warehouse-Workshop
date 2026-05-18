@@ -69,9 +69,11 @@ public class RabbitMQConfig {
 
     @Bean
     Binding timeTickBinding(Queue timeTickQueue, TopicExchange timeExchange) {
-        return BindingBuilder.bind(timeTickQueue)
+        Binding binding = BindingBuilder.bind(timeTickQueue)
                 .to(timeExchange)
                 .with(ROUTING_KEY_TIME_TICK);
+        binding.setShouldDeclare(false);
+        return binding;
     }
 
     @Bean

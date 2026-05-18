@@ -26,7 +26,7 @@ public class WarehouseEntity {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="type")
+    @Column(name="warehouse_type")
     private WarehouseType warehouseType;
 
     //Location

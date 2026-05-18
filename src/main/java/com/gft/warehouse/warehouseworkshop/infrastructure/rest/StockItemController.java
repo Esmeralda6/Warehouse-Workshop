@@ -17,7 +17,7 @@ public class StockItemController {
     @Autowired
     private StockItemService stockItemService;
 
-    @GetMapping("/list")
+    @GetMapping("")
     public List<StockItemDTO> getStockItems(){
         return stockItemService.getStockItems();
     }

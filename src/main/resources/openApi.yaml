@@ -1,0 +1,146 @@
+openapi: 3.1.0
+info:
+  title: Warehouse Service
+  description: |
+    This API allows access declaring and accessing warehouses and their available stock, as well as managing shipments.
+    Additionally, this service is responsible for the definition of the product catalog.
+  version: 1.0.0
+tags:
+  - name: Warehouses
+    description: Warehouse management operations
+  - name: Stock
+    description: Stock Item associations
+  - name: Products
+    description: Product catalog management operations
+paths:
+  #Warehouse CRUD and functionalities
+  /warehouses:
+    get:
+      summary: Get all warehouses
+      description: Retrieves the list of all currently existing warehouses
+      tags:
+        - Warehouses
+      operationId: getWarehouses
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/warehouseDTO'
+    post:
+      summary: Create warehouse
+      description: Create a new warehouse, given an id or not
+      tags:
+        - Warehouses
+      operationId: saveWarehouse
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/warehouseDTO'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: "Warehouse saved with id: 1"
+  #Operations on a single warehouse
+  /warehouses/{id}:
+    parameters:
+      - $ref: '#/components/schemas/id'
+    get:
+      summary: Get warehouse by Id
+      description: Retrieves a single warehouse given its unique id
+      tags:
+        - Warehouses
+      operationId: getWarehouseById
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/id'
+    delete:
+      summary: Delete warehouse by Id
+      description: Removes a single warehouse given its unique id, cascading all related data like its StockItems
+      tags:
+        - Warehouses
+      operationId: deleteWarehouse
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: "Warehouse deleted with id: 1"
+    put:
+      summary: Update warehouse by Id
+      description: Update/modify a single warehouse given its unique id
+      tags:
+        - Warehouses
+      operationId: updateWarehouse
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/warehouseDTO'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: "Warehouse updated with id: 1"
+
+components:
+  parameters:
+    id:
+      description: Identifier string value in UUID format
+      name: id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/id'
+  schemas:
+    id:
+      type: string
+      maxLength: 36
+      description: A UUID in string format
+    warehouseType:
+      type: string
+      enum:
+        - 'PRODUCTION'
+        - 'FACTORY'
+        - 'CLIENT'
+      description: Possible types of a warehouse which relate to its function
+      example: 'FACTORY'
+    location:
+      type: object
+      properties:
+        x:
+          type: integer
+          example: 1
+        y:
+          type: integer
+          example: 2
+    warehouseDTO:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/id'
+        name:
+          type: string
+        warehouseType:
+          $ref: '#/components/schemas/id'
+        location:
+          $ref: '#/components/schemas/location'
+        factoryId:
+          $ref: '#/components/schemas/id'

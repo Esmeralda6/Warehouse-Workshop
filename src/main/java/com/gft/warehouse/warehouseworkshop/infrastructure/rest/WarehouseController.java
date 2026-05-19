@@ -87,16 +87,50 @@ public class WarehouseController {
         return warehouseService.saveWarehouse( warehouse );
     }
 
+    @Operation(
+            summary = "Update Warehouse",
+            description = "Updates a given warehouse, retrieved through its unique id." )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Warehouse updated",
+            content = @Content(
+                    mediaType = "text/plain",
+                    schema = @Schema(implementation = String.class),
+                    examples = @ExampleObject("Warehouse updated with id: 1")
+            )
+    )
     @PutMapping("/{id}")
     public String updateWarehouse(
+            @Parameter(description = "Warehouse Id as UUID", example = "47d4b6fa-5a90-4afc-8e4c-a53f4541182f")
             @PathVariable String id,
+
+            @io.swagger.v3.oas.annotations.parameters.RequestBody
+                    (description = "Ignores RequestBody id, immutable.",
+                            required = true,
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = WarehouseDTO.class) )
+                    )
             @RequestBody WarehouseDTO warehouse
     ){
         return warehouseService.updateWarehouse( id, warehouse );
     }
 
+    @Operation(
+            summary = "Delete Warehouse",
+            description = "Deletes a given warehouse, retrieved through its unique id." )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Warehouse deleted",
+            content = @Content(
+                    mediaType = "text/plain",
+                    schema = @Schema(implementation = String.class),
+                    examples = @ExampleObject("Warehouse updated with id: 1")
+            )
+    )
     @DeleteMapping("/{id}")
     public String deleteWarehouse(
+            @Parameter(description = "Warehouse Id as UUID", example = "47d4b6fa-5a90-4afc-8e4c-a53f4541182f")
             @PathVariable String id
     ){
         return warehouseService.deleteWarehouse( id );
@@ -107,14 +141,46 @@ public class WarehouseController {
     //Find Warehouse without assigned FactoryId
         //Currently only checks if FactoryId==null && Type==FACTORY, and returns first found
     @GetMapping("/available")
+    @Operation(
+            summary = "Find available warehouse",
+            description = "Find Warehouse without assigned FactoryId. \nCurrently only checks if FactoryId==null && Type==FACTORY, and returns first found" )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Warehouse retrieved",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = WarehouseDTO.class)
+            )
+    )
     public Optional<WarehouseDTO> findAvailableWarehouse(){
         return warehouseService.findAvailableWarehouse();
     }
 
     //Assign Factory to an existing warehouse,
     @PatchMapping("/assignFactory/{warehouseId}")
+    @Operation(
+            summary = "Assign Factory to a Warehouse",
+            description = "Patches the factoryId attribute of a warehouse retrived by its unique id with the provided factoryId." )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Warehouse updated",
+            content = @Content(
+                    mediaType = "text/plain",
+                    schema = @Schema(implementation = String.class),
+                    examples = @ExampleObject("Warehouse with id: 1 succesfully assigned to factory with id 2")
+            )
+    )
     public String assignFactory(
+            @Parameter(description = "Warehouse Id as UUID", example = "47d4b6fa-5a90-4afc-8e4c-a53f4541182f")
             @PathVariable String warehouseId,
+
+            @io.swagger.v3.oas.annotations.parameters.RequestBody
+                    (description = "factoryId required.",
+                            required = true,
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = FactoryIdDTO.class) )
+                    )
             @RequestBody FactoryIdDTO factoryId
             ){
         return warehouseService.assignFactoryId(warehouseId, factoryId);

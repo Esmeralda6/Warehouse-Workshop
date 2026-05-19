@@ -6,6 +6,7 @@ import com.gft.warehouse.warehouseworkshop.application.service.warehouse.Warehou
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -61,7 +62,26 @@ public class WarehouseController {
     }
 
     @PostMapping("")
+    @Operation(
+            summary = "Save Warehouse",
+            description = "Creates a new warehouse, accepting a specific UUID or assigning a randomly generated one." )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Warehouse saved",
+            content = @Content(
+                    mediaType = "text/plain",
+                    schema = @Schema(implementation = String.class),
+                    examples = @ExampleObject("Warehouse saved with id: 1")
+            )
+    )
     public String saveWarehouse(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody
+                    (description = "Accepts nullable id",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = WarehouseDTO.class) )
+                    )
             @RequestBody WarehouseDTO warehouse
     ){
         return warehouseService.saveWarehouse( warehouse );

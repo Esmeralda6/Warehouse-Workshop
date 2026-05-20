@@ -1,0 +1,16 @@
+description: "GET /warehouses/available returns the first warehouse of type FACTORY with no factory assigned"
+request:
+  method: GET
+  url: /warehouses/available
+response:
+  status: 200
+  headers:
+    Content-Type: "application/json"
+  body:
+    id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+    name: "Central Warehouse"
+    type: "FACTORY"
+    location:
+      x: 10
+      y: 20
+    factoryId: null

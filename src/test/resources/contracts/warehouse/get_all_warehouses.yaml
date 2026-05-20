@@ -1,0 +1,16 @@
+description: "GET /warehouses/list returns the list of all warehouses"
+request:
+  method: GET
+  url: /warehouses/list
+response:
+  status: 200
+  headers:
+    Content-Type: "application/json"
+  body:
+    - id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      name: "Central Warehouse"
+      type: "FACTORY"
+      location:
+        x: 10
+        y: 20
+      factoryId: null

@@ -1,0 +1,7 @@
+description: "GET /warehouses/{id} returns 200 with null body when warehouse does not exist"
+request:
+  method: GET
+  url: /warehouses/cccccccc-cccc-cccc-cccc-cccccccccccc
+response:
+  status: 200
+  body: null

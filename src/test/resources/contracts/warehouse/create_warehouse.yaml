@@ -1,0 +1,15 @@
+description: "POST /warehouses creates a warehouse and returns a confirmation message with the new ID"
+request:
+  method: POST
+  url: /warehouses
+  headers:
+    Content-Type: "application/json"
+  body:
+    name: "New Warehouse"
+    type: "FACTORY"
+    location:
+      x: 5
+      y: 10
+response:
+  status: 200
+  body: "Warehouse saved with id: aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"

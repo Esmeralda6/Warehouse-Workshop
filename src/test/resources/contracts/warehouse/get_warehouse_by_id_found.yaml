@@ -1,0 +1,16 @@
+description: "GET /warehouses/{id} returns the warehouse when it exists"
+request:
+  method: GET
+  url: /warehouses/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+response:
+  status: 200
+  headers:
+    Content-Type: "application/json"
+  body:
+    id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+    name: "Central Warehouse"
+    type: "FACTORY"
+    location:
+      x: 10
+      y: 20
+    factoryId: null

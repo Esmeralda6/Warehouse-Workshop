@@ -8,6 +8,8 @@ import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -92,6 +94,21 @@ class WarehouseRepositoryAdapterTest {
 
         assertThatNoException().isThrownBy( () -> warehouseRepository.delete(warehouseId));
 
+    }
+
+    @ParameterizedTest(name = "updatedRows={0} -> expected={1}")
+    @CsvSource({
+            "1, true",
+            "0, false"
+    })
+    void assignFactory_returnsExpectedResult(int updatedRows, boolean expected) {
+        WarehouseId warehouseId = WarehouseId.builder().id(UUID.randomUUID()).build();
+        FactoryId factoryId = FactoryId.builder().id(UUID.randomUUID()).build();
+        when(warehouseJpaRepository.assignFactoryIdIfAvailable(warehouseId.getId(), factoryId.getId())).thenReturn(updatedRows);
+
+        boolean result = warehouseRepository.assignFactory(warehouseId, factoryId);
+
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test

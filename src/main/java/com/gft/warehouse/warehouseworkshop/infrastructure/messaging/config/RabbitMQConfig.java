@@ -17,6 +17,7 @@ public class RabbitMQConfig {
 
     public static final String EXCHANGE                                  = "warehouses.exchange";
     public static final String TIME_EXCHANGE                             = "ms-time.exchange";
+    public static final String PRODUCTION_EXCHANGE                            = "production.exchange";
 
     public static final String QUEUE_WAREHOUSE_CREATED                   = "warehouse" + ".registered.queue";
     public static final String ROUTING_KEY_WAREHOUSE_CREATED             = "warehouse.registered.v1";
@@ -51,6 +52,13 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    TopicExchange productionExchange() {
+        TopicExchange exchange = new TopicExchange(PRODUCTION_EXCHANGE);
+        exchange.setShouldDeclare(false);
+        return exchange;
+    }
+
+    @Bean
     Queue warehouseCreatedQueue() {
         return new Queue(QUEUE_WAREHOUSE_CREATED, true);
     }
@@ -72,6 +80,7 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(timeTickQueue)
                 .to(timeExchange)
                 .with(ROUTING_KEY_TIME_TICK);
+
     }
 
     @Bean
@@ -80,9 +89,9 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Binding deliveryCompletedBinding(Queue deliveryCompletedQueue, TopicExchange warehouseExchange) {
+    Binding deliveryCompletedBinding(Queue deliveryCompletedQueue, TopicExchange productionExchange) {
         return BindingBuilder.bind(deliveryCompletedQueue)
-                .to(warehouseExchange)
+                .to(productionExchange)
                 .with(ROUTING_KEY_DELIVERY_COMPLETED);
     }
 
@@ -92,9 +101,9 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Binding materialsRequestedBinding(Queue materialsRequestedQueue, TopicExchange warehouseExchange) {
+    Binding materialsRequestedBinding(Queue materialsRequestedQueue, TopicExchange productionExchange) {
         return BindingBuilder.bind(materialsRequestedQueue)
-                .to(warehouseExchange)
+                .to(productionExchange)
                 .with(ROUTING_KEY_MATERIALS_REQUESTED);
     }
 
@@ -104,9 +113,9 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Binding productionOrderCompletedBinding(Queue productionOrderCompletedQueue, TopicExchange warehouseExchange) {
+    Binding productionOrderCompletedBinding(Queue productionOrderCompletedQueue, TopicExchange productionExchange) {
         return BindingBuilder.bind(productionOrderCompletedQueue)
-                .to(warehouseExchange)
+                .to(productionExchange)
                 .with(ROUTING_KEY_PRODUCTION_ORDER_COMPLETED);
     }
 
@@ -116,9 +125,9 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Binding factoryRegisteredBinding(Queue factoryRegisteredQueue, TopicExchange warehouseExchange) {
+    Binding factoryRegisteredBinding(Queue factoryRegisteredQueue, TopicExchange productionExchange) {
         return BindingBuilder.bind(factoryRegisteredQueue)
-                .to(warehouseExchange)
+                .to(productionExchange)
                 .with(ROUTING_KEY_FACTORY_REGISTERED);
     }
 

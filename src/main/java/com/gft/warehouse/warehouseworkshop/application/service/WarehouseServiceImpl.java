@@ -114,19 +114,14 @@ public class WarehouseServiceImpl implements WarehouseService{
         return warehouseRepository.findAvailable().map(GeneralMapperUtils::toDTO);
     }
 
-    public String assignFactoryId( String warehouseId, FactoryIdDTO factoryId){
-        Optional<WarehouseDTO> warehouse = warehouseRepository.findById(
-                WarehouseId.builder().id(UUID.fromString(warehouseId)).build())
-                .map(updatedWarehouse -> {
-                    updatedWarehouse.setFactoryId(
-                            FactoryId.builder().id( UUID.fromString( factoryId.getFactoryId() ) ).build());
-                    return GeneralMapperUtils.toDto( warehouseRepository.save(updatedWarehouse) );
-                });
-        if (warehouse.isPresent()){
+    public String assignFactoryId(String warehouseId, FactoryIdDTO factoryId) {
+        boolean assigned = warehouseRepository.assignFactory(
+                WarehouseId.builder().id(UUID.fromString(warehouseId)).build(),
+                FactoryId.builder().id(UUID.fromString(factoryId.getFactoryId())).build());
+        if (assigned) {
             return "Warehouse with id " + warehouseId + " succesfully assigned to factory with id " + factoryId;
         }
         return "Warehouse with id " + warehouseId + " not found.";
-
     }
 
 }

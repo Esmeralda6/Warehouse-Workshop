@@ -28,6 +28,11 @@ classDiagram
         +subtract(qty) void
         +hasProduct(productId) boolean
     }
+    class Product {
+        <<entity>>
+        +ProductId productId
+        +String productName
+    }
     class WarehouseId {
         <<value object>>
         +UUID value
@@ -67,6 +72,8 @@ classDiagram
     StockItem --> ProductId
     StockItem --> Quantity
     StockItem --> StockItemId
+    Product "1" --> "1..*" StockItem
+    Product --> ProductId
 ```
 
 ## Module: replenishment
@@ -268,7 +275,7 @@ flowchart TD
 #### `materials.given.v1`
 ```json
 {
-  "orderId" : "uuid"
+  "orderId" : "uuid",
   "items": [
     { "productId": "uuid", "quantity": 0 }
   ]
@@ -308,7 +315,7 @@ flowchart TD
 #### `product.materials.requested.v1`
 ```json
 {
-  "orderId" : "uuid"
+  "orderId" : "uuid",
   "items": [
     { "productId": "uuid", "quantity": 0 }
   ]

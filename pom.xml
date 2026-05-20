@@ -28,7 +28,21 @@
     </scm>
     <properties>
         <java.version>25</java.version>
+        <spring-cloud.version>2024.0.0</spring-cloud.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
 
         <dependency>
@@ -103,6 +117,13 @@
             <artifactId>rabbitmq</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Spring Cloud Contract: generates JUnit tests from YAML contracts and
+             WireMock stubs that consumers can use to test against this service. -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-contract-verifier</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -164,6 +185,19 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Reads contracts from src/test/resources/contracts/, generates JUnit tests
+                 that extend ContractBase, and packages WireMock stubs as a *-stubs.jar. -->
+            <plugin>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+                <version>4.2.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <baseClassForTests>
+                        com.gft.warehouse.warehouseworkshop.contract.ContractBase
+                    </baseClassForTests>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -184,10 +218,12 @@
                             <outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
                             <formats>
                                 <format>XML</format>
+                                <format>HTML</format>
                             </formats>
-                            <includes>
-                                <include>com/gft/warehouse/warehouseworkshop/CoverageMarker*</include>
-                            </includes>
+                            <excludes>
+                                <exclude>com/gft/warehouse/warehouseworkshop/WarehouseWorkshopApplication.class</exclude>
+                                <exclude>com/gft/warehouse/warehouseworkshop/application/service/GeneralMapperUtils.class</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                 </executions>

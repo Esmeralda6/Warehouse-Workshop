@@ -113,6 +113,12 @@ class WarehouseServiceImplTest {
                         .type("FACTORY")
                         .build()),
                 Arguments.of(WarehouseDTO.builder()
+                        .id("")
+                        .name("warehouse_1")
+                        .location(LocationDTO.builder().x(1).y(2).build())
+                        .type("FACTORY")
+                        .build()),
+                Arguments.of(WarehouseDTO.builder()
                         .id( UUID.randomUUID().toString() )
                         .name("warehouse_1")
                         .location(LocationDTO.builder().x(1).y(2).build())

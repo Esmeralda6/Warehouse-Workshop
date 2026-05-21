@@ -320,4 +320,25 @@ class WarehouseServiceImplTest {
                 .isNotBlank()
                 .contains(warehouseId.getId() + " not found.");
     }
+
+    @Test
+    void saveWarehouse_whenPublisherThrows_catchesExceptionAndReturnsId() throws Exception {
+        WarehouseDTO warehouseDTO = WarehouseDTO.builder()
+                .id(UUID.randomUUID().toString())
+                .name("warehouse_1")
+                .location(LocationDTO.builder().x(1).y(2).build())
+                .type("FACTORY")
+                .build();
+        when(warehouseRepository.save(Mockito.any(Warehouse.class))).thenReturn(
+                WarehouseEntity.builder()
+                        .id(UUID.randomUUID())
+                        .name(warehouseDTO.getName())
+                        .warehouseType(WarehouseType.FACTORY)
+                        .x(1).y(2)
+                        .build()
+        );
+        doThrow(new RuntimeException("publish failed")).when(eventPublisher).warehouseRegistered(any(Warehouse.class));
+
+        assertThatCode(() -> warehouseService.saveWarehouse(warehouseDTO)).doesNotThrowAnyException();
+    }
 }

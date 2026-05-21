@@ -1,7 +1,6 @@
 package com.gft.warehouse.warehouseworkshop.application.service.warehouse;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.FactoryIdDTO;
-import com.gft.warehouse.warehouseworkshop.application.dto.DeliveryCompletedDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.ShipmentRequestDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.StockItem;
@@ -11,6 +10,8 @@ import com.gft.warehouse.warehouseworkshop.domain.ports.EventPublisher;
 import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
+import com.gft.warehouse.warehouseworkshop.domain.valueObject.ProductId;
+import com.gft.warehouse.warehouseworkshop.domain.valueObject.Quantity;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -146,8 +147,14 @@ public class WarehouseServiceImpl implements WarehouseService{
 
                 eventPublisher.shipmentRequested( warehouseDestination.get(), shipmentRequestDTO);
 
-                //warehouseOrigin.get().getStock().stream().map(StockItem::subtract(shipmentRequestDTO.getItems()))
+                List<StockItem> requestedItems = shipmentRequestDTO.getItems().stream()
+                        .map(item -> StockItem.builder()
+                                .productId(ProductId.builder().id(UUID.fromString(item.getMaterialType())).build())
+                                .quantity(Quantity.builder().value(item.getQuantity()).build())
+                                .build())
+                        .toList();
 
+                warehouseOrigin.get().consumeStock(requestedItems);
                 warehouseRepository.save( warehouseOrigin.get() );
 
             }catch (Exception e){

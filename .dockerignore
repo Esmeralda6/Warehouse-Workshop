@@ -1,0 +1,12 @@
+.git
+.github
+.idea
+.vscode
+target
+build
+*.iml
+*.iws
+*.ipr
+.env
+.env.*
+!.env.example

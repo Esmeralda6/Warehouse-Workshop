@@ -14,6 +14,10 @@ import java.util.UUID;
 
 @Slf4j
 public abstract class WarehouseMapperUtils {
+
+    @lombok.Generated
+    protected WarehouseMapperUtils() {}
+
     public static WarehouseDTO toDTO(Warehouse warehouse){
 
         return WarehouseDTO.builder()

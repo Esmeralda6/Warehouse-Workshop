@@ -227,6 +227,7 @@
                             <excludes>
                                 <exclude>com/gft/warehouse/warehouseworkshop/WarehouseWorkshopApplication.class</exclude>
                                 <exclude>com/gft/warehouse/warehouseworkshop/application/service/GeneralMapperUtils.class</exclude>
+                                <exclude>com/gft/warehouse/warehouseworkshop/OpenApiConfig.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>

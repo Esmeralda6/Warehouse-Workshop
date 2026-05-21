@@ -26,7 +26,7 @@ public class WarehouseController {
     @Autowired
     private WarehouseService warehouseService;
 
-    @GetMapping("")
+    @GetMapping({"", "/list"})
     @Operation(
             summary = "Get all warehouses",
             description = "Retrieves the list of all currently existing warehouses" )

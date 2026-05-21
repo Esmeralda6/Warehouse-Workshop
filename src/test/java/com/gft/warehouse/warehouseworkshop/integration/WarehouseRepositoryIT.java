@@ -137,6 +137,45 @@ class WarehouseRepositoryIT {
         assertThat(result).isEmpty();
     }
 
+    // ─── assignFactoryIdIfAvailable ──────────────────────────────────────────────
+
+    @Test
+    void assignFactoryIdIfAvailable_whenFactoryIdIsNull_updatesRowAndReturns1() {
+        UUID warehouseId = UUID.randomUUID();
+        UUID factoryId = UUID.randomUUID();
+        repository.save(WarehouseEntity.builder()
+                .id(warehouseId).name("Available")
+                .warehouseType(WarehouseType.FACTORY)
+                .x(0).y(0).factoryId(null).build());
+
+        int updated = repository.assignFactoryIdIfAvailable(warehouseId, factoryId);
+
+        assertThat(updated).isEqualTo(1);
+        assertThat(repository.findById(warehouseId).orElseThrow().getFactoryId()).isEqualTo(factoryId);
+    }
+
+    @Test
+    void assignFactoryIdIfAvailable_whenFactoryIdAlreadySet_returns0AndDoesNotOverwrite() {
+        UUID warehouseId = UUID.randomUUID();
+        UUID existingFactoryId = UUID.randomUUID();
+        repository.save(WarehouseEntity.builder()
+                .id(warehouseId).name("AlreadyAssigned")
+                .warehouseType(WarehouseType.FACTORY)
+                .x(0).y(0).factoryId(existingFactoryId).build());
+
+        int updated = repository.assignFactoryIdIfAvailable(warehouseId, UUID.randomUUID());
+
+        assertThat(updated).isEqualTo(0);
+        assertThat(repository.findById(warehouseId).orElseThrow().getFactoryId()).isEqualTo(existingFactoryId);
+    }
+
+    @Test
+    void assignFactoryIdIfAvailable_whenWarehouseDoesNotExist_returns0() {
+        int updated = repository.assignFactoryIdIfAvailable(UUID.randomUUID(), UUID.randomUUID());
+
+        assertThat(updated).isEqualTo(0);
+    }
+
     private WarehouseEntity entity(String name, WarehouseType type, UUID factoryId) {
         return WarehouseEntity.builder()
                 .id(UUID.randomUUID()).name(name)

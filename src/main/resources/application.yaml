@@ -3,7 +3,7 @@ spring:
     name: Warehouse-Workshop
 
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/warehouse_db}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5433/warehouse_db}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver

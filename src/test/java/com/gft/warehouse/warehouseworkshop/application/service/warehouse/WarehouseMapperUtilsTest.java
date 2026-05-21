@@ -93,6 +93,44 @@ class WarehouseMapperUtilsTest {
     }
 
     @Test
+    void toDomain_fromDTO_withFactoryId() {
+        UUID warehouseUUID = UUID.randomUUID();
+        UUID factoryUUID = UUID.randomUUID();
+        WarehouseDTO dto = WarehouseDTO.builder()
+                .id(warehouseUUID.toString())
+                .name("warehouse_1")
+                .type("FACTORY")
+                .location(LocationDTO.builder().x(1).y(2).build())
+                .factoryId(factoryUUID.toString())
+                .build();
+
+        Warehouse result = WarehouseMapperUtils.toDomain(dto);
+
+        assertThat(result.getWarehouseId().getId()).isEqualTo(warehouseUUID);
+        assertThat(result.getWarehouseName()).isEqualTo("warehouse_1");
+        assertThat(result.getWarehouseType()).isEqualTo(WarehouseType.FACTORY);
+        assertThat(result.getWarehouseLocation().getX()).isEqualTo(1);
+        assertThat(result.getWarehouseLocation().getY()).isEqualTo(2);
+        assertThat(result.getFactoryId().getId()).isEqualTo(factoryUUID);
+    }
+
+    @Test
+    void toDomain_fromDTO_withNullFactoryId() {
+        UUID warehouseUUID = UUID.randomUUID();
+        WarehouseDTO dto = WarehouseDTO.builder()
+                .id(warehouseUUID.toString())
+                .name("warehouse_1")
+                .type("FACTORY")
+                .location(LocationDTO.builder().x(1).y(2).build())
+                .factoryId(null)
+                .build();
+
+        Warehouse result = WarehouseMapperUtils.toDomain(dto);
+
+        assertThat(result.getFactoryId().getId()).isNull();
+    }
+
+    @Test
     void toDomain_fromEntity() {
         UUID warehouseUUID = UUID.randomUUID();
         UUID factoryUUID = UUID.randomUUID();

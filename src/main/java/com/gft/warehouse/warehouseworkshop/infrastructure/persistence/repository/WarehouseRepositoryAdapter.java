@@ -4,6 +4,7 @@ import com.gft.warehouse.warehouseworkshop.application.service.warehouse.Warehou
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
 import com.gft.warehouse.warehouseworkshop.domain.enums.WarehouseType;
 import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
+import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
 import lombok.RequiredArgsConstructor;
@@ -57,5 +58,9 @@ public class WarehouseRepositoryAdapter implements WarehouseRepository {
                 .map(WarehouseMapperUtils::toDomain);
     }
 
-
+    @Override
+    public boolean assignFactory(WarehouseId warehouseId, FactoryId factoryId) {
+        return warehouseJpaRepository.assignFactoryIdIfAvailable(
+                warehouseId.getId(), factoryId.getId()) > 0;
+    }
 }

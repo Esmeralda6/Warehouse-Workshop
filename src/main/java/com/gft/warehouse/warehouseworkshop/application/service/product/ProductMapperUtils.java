@@ -11,6 +11,9 @@ import java.util.UUID;
 @Slf4j
 public abstract class ProductMapperUtils {
 
+    @lombok.Generated
+    protected ProductMapperUtils() {}
+
     public static ProductDTO toDTO(Product product){
 
         return ProductDTO.builder()

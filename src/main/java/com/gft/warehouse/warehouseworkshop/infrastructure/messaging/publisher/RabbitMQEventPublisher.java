@@ -1,5 +1,6 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.messaging.publisher;
 
+import com.gft.warehouse.warehouseworkshop.application.dto.ShipmentRequestDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Product;
 import com.gft.warehouse.warehouseworkshop.application.dto.ItemRequestDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.ShipmentRequestDTO;

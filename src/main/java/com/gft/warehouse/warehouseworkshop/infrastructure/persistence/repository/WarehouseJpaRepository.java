@@ -18,7 +18,7 @@ public interface WarehouseJpaRepository extends JpaRepository<WarehouseEntity, U
     List<WarehouseEntity> findByWarehouseTypeAndFactoryIdNull(WarehouseType warehouseType);
 
     // Returns 1 if the row was claimed, 0 if not found or already assigned.
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Transactional
     @Query("UPDATE WarehouseEntity w SET w.factoryId = :factoryId WHERE w.id = :id AND w.factoryId IS NULL")
     int assignFactoryIdIfAvailable(@Param("id") UUID id, @Param("factoryId") UUID factoryId);

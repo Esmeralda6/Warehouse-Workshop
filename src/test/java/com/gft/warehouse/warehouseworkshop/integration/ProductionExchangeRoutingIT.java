@@ -9,7 +9,10 @@ import com.gft.warehouse.warehouseworkshop.infrastructure.messaging.listener.Del
 import com.gft.warehouse.warehouseworkshop.infrastructure.messaging.listener.FactoryRegisteredListener;
 import com.gft.warehouse.warehouseworkshop.infrastructure.messaging.listener.MaterialsRequestedListener;
 import com.gft.warehouse.warehouseworkshop.infrastructure.messaging.listener.ProductionOrderCompletedListener;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,6 +52,15 @@ class ProductionExchangeRoutingIT {
     @Container
     @ServiceConnection
     static RabbitMQContainer rabbitMQ = new RabbitMQContainer("rabbitmq:3-management");
+
+    @BeforeAll
+    static void setUpProductionExchange(@Autowired AmqpAdmin amqpAdmin) {
+        // production.exchange has setShouldDeclare(false) because in production it is declared
+        // by the producer service. In this test with a fresh RabbitMQ container, we must
+        // declare it explicitly so the queue bindings can be established.
+        amqpAdmin.declareExchange(new TopicExchange(RabbitMQConfig.PRODUCTION_EXCHANGE));
+        amqpAdmin.initialize();
+    }
 
     @Autowired
     RabbitTemplate rabbitTemplate;

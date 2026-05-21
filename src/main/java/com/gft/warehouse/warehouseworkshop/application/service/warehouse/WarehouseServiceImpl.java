@@ -1,11 +1,12 @@
 package com.gft.warehouse.warehouseworkshop.application.service.warehouse;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.FactoryIdDTO;
-import com.gft.warehouse.warehouseworkshop.application.dto.StockItemDTO;
+import com.gft.warehouse.warehouseworkshop.application.dto.DeliveryCompletedDTO;
+import com.gft.warehouse.warehouseworkshop.application.dto.ShipmentRequestDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
+import com.gft.warehouse.warehouseworkshop.domain.aggregates.StockItem;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
 import com.gft.warehouse.warehouseworkshop.domain.enums.WarehouseType;
-import com.gft.warehouse.warehouseworkshop.domain.events.WarehouseCreatedEvent;
 import com.gft.warehouse.warehouseworkshop.domain.ports.EventPublisher;
 import com.gft.warehouse.warehouseworkshop.domain.repository.WarehouseRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
@@ -129,5 +130,32 @@ public class WarehouseServiceImpl implements WarehouseService{
         }
         return "Warehouse with id " + warehouseId + " not found.";
     }
+
+    //Shipment
+    public ShipmentRequestDTO requestShipment(ShipmentRequestDTO shipmentRequestDTO){
+        Optional<Warehouse> warehouseDestination = warehouseRepository.findById(
+                WarehouseId.builder().id(
+                        UUID.fromString(shipmentRequestDTO.getDestinationId())
+                ).build());
+        Optional<Warehouse> warehouseOrigin = warehouseRepository.findById(
+                WarehouseId.builder().id(
+                        UUID.fromString(shipmentRequestDTO.getOriginId())
+                ).build());
+        if (warehouseDestination.isPresent() && warehouseOrigin.isPresent()){
+            try {
+
+                eventPublisher.shipmentRequested( warehouseDestination.get(), shipmentRequestDTO);
+
+                //warehouseOrigin.get().getStock().stream().map(StockItem::subtract(shipmentRequestDTO.getItems()))
+
+                warehouseRepository.save( warehouseOrigin.get() );
+
+            }catch (Exception e){
+                log.error(e.getMessage());
+            }
+        }
+        return shipmentRequestDTO;
+    }
+
 
 }

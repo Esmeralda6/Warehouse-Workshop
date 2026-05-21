@@ -1,6 +1,7 @@
 package com.gft.warehouse.warehouseworkshop.application.service.warehouse;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.FactoryIdDTO;
+import com.gft.warehouse.warehouseworkshop.application.dto.ShipmentRequestDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import java.util.List;
 import java.util.Optional;
@@ -14,4 +15,6 @@ public interface WarehouseService {
 
     Optional<WarehouseDTO> findAvailableWarehouse();
     String assignFactoryId( String warehouseId, FactoryIdDTO factoryId);
+
+    ShipmentRequestDTO  requestShipment(ShipmentRequestDTO shipmentRequestDTO);
 }

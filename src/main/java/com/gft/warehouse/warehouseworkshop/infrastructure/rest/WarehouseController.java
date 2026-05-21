@@ -1,6 +1,7 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.rest;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.FactoryIdDTO;
+import com.gft.warehouse.warehouseworkshop.application.dto.ShipmentRequestDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
 import com.gft.warehouse.warehouseworkshop.application.service.warehouse.WarehouseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -184,6 +185,27 @@ public class WarehouseController {
             @RequestBody FactoryIdDTO factoryId
             ){
         return warehouseService.assignFactoryId(warehouseId, factoryId);
+    }
+
+    @PostMapping("/orderShipment")
+    @Operation(
+            summary = "Order a Shipment",
+            description = "Creates a new Shipment order, requesting material from an origin to a destination" )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Shipment order created"
+    )
+    public ShipmentRequestDTO orderShipment(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody
+                    (description = "Accepts nullable shipmentId",
+                            required = true,
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ShipmentRequestDTO.class) )
+                    )
+            @RequestBody ShipmentRequestDTO shipmentRequestDTO
+    ){
+        return warehouseService.requestShipment(shipmentRequestDTO);
     }
 
     /*

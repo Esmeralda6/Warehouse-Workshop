@@ -1,17 +1,16 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.messaging.time;
 
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CurrentDayHolder {
 
-    private volatile int currentDay = 0;
+    @Getter
+    private static volatile int currentDay = 0;
 
     public void update(int day) {
-        this.currentDay = day;
+        currentDay = day;
     }
 
-    public int getCurrentDay() {
-        return currentDay;
-    }
 }

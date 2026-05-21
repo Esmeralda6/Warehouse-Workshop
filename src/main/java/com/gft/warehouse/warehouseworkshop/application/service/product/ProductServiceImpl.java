@@ -2,6 +2,7 @@ package com.gft.warehouse.warehouseworkshop.application.service.product;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.ProductDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Product;
+import com.gft.warehouse.warehouseworkshop.domain.ports.EventPublisher;
 import com.gft.warehouse.warehouseworkshop.domain.repository.ProductRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.ProductId;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.ProductEntity;
@@ -18,6 +19,9 @@ import java.util.UUID;
 public class ProductServiceImpl implements ProductService{
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private EventPublisher eventPublisher;
 
     @Override
     public List<ProductDTO> getProducts() {
@@ -48,6 +52,13 @@ public class ProductServiceImpl implements ProductService{
                 product
         );
         log.info( savedProduct.toString() );
+
+        try {
+            eventPublisher.productChanged(product);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
         return "Product saved with id: " + savedProduct.getId().toString();
     }
 
@@ -59,7 +70,13 @@ public class ProductServiceImpl implements ProductService{
                     updatedProduct.setProductName(
                             productDTO.getName()
                     );
-                    return ProductMapperUtils.toDTO( productRepository.save(updatedProduct));
+                    ProductMapperUtils.toDTO( productRepository.save(updatedProduct));
+                    try {
+                        eventPublisher.productChanged(updatedProduct);
+                    } catch (Exception e) {
+                        log.error(e.getMessage());
+                    }
+                    return ProductMapperUtils.toDTO(updatedProduct);
                 });
         if (product.isPresent()){
             return "Product with id " + id + " succesfully updated";

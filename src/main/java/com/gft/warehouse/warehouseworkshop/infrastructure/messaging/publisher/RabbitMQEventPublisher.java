@@ -1,9 +1,11 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.messaging.publisher;
 
+import com.gft.warehouse.warehouseworkshop.domain.aggregates.Product;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.StockItem;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
 import com.gft.warehouse.warehouseworkshop.domain.enums.StockVariationType;
 import com.gft.warehouse.warehouseworkshop.domain.events.DomainEvent;
+import com.gft.warehouse.warehouseworkshop.domain.events.ProductChangedEvent;
 import com.gft.warehouse.warehouseworkshop.domain.events.StockChangedEvent;
 import com.gft.warehouse.warehouseworkshop.domain.events.WarehouseCreatedEvent;
 import com.gft.warehouse.warehouseworkshop.domain.ports.EventPublisher;
@@ -47,5 +49,15 @@ public class RabbitMQEventPublisher implements EventPublisher {
         ));
         stockItem.getDomainEvents().forEach(this::publish);
         stockItem.clearDomainEvents();
+    }
+
+    @Override
+    public void productChanged(Product product) throws Exception {
+        product.recordEvent(new ProductChangedEvent(
+                product.getProductId().getId().toString(),
+                product.getProductName()
+        ));
+        product.getDomainEvents().forEach(this::publish);
+        product.clearDomainEvents();
     }
 }

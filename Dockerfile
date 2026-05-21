@@ -1,26 +1,15 @@
-FROM eclipse-temurin:25-jdk-alpine AS build
-
-WORKDIR /workspace
-
-COPY .mvn/ .mvn/
-COPY mvnw pom.xml ./
-
-RUN chmod +x mvnw && ./mvnw -B -DskipTests dependency:go-offline
-
-COPY src/ src/
-
-RUN ./mvnw -B -DskipTests package && cp target/Warehouse-Workshop-0.0.1-SNAPSHOT.jar app.jar
-
-FROM eclipse-temurin:21-jre-alpine
-
+#Build
+FROM amazoncorretto:21-alpine AS builder
 WORKDIR /app
+COPY mvnw pom.xml ./
+COPY .mvn .mvn
+RUN ./mvnw dependency:go-offline -q
 
-RUN addgroup -S app && adduser -S app -G app
-
-COPY --from=build /workspace/app.jar app.jar
-
-USER app
-
+COPY src src
+RUN ./mvnw package -DskipTests -q
+#Runtime
+FROM amazoncorretto:21-alpine
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8080
-
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

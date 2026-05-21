@@ -1,5 +1,6 @@
 package com.gft.warehouse.warehouseworkshop.domain.aggregates;
 
+import com.gft.warehouse.warehouseworkshop.domain.events.DomainEvent;
 import com.gft.warehouse.warehouseworkshop.domain.exceptions.InsuficientStockException;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.ProductId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Quantity;
@@ -8,6 +9,9 @@ import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Getter
@@ -18,6 +22,21 @@ public class StockItem {
     private Quantity quantity;
     private final WarehouseId warehouseId;
     private Quantity minimumQuantityRule;
+
+    @Builder.Default
+    private List<DomainEvent> domainEvents = new ArrayList<>();
+
+    public void recordEvent(DomainEvent event) {
+        domainEvents.add(event);
+    }
+
+    public List<DomainEvent> getDomainEvents() {
+        return List.copyOf(domainEvents);
+    }
+
+    public void clearDomainEvents() {
+        domainEvents.clear();
+    }
 
     public boolean isEnough(Quantity needed) {
         return this.quantity.getValue() >= needed.getValue();

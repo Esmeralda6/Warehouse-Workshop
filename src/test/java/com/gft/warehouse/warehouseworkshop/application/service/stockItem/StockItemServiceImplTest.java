@@ -2,6 +2,8 @@ package com.gft.warehouse.warehouseworkshop.application.service.stockItem;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.StockItemDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.StockItem;
+import com.gft.warehouse.warehouseworkshop.domain.enums.StockVariationType;
+import com.gft.warehouse.warehouseworkshop.domain.ports.EventPublisher;
 import com.gft.warehouse.warehouseworkshop.domain.repository.StockItemRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.*;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.ProductEntity;
@@ -23,6 +25,9 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +38,9 @@ class StockItemServiceImplTest {
 
     @Mock
     private StockItemRepository stockItemRepository;
+
+    @Mock
+    private EventPublisher eventPublisher;
 
     @Test
     void getStockItems() {
@@ -232,5 +240,90 @@ class StockItemServiceImplTest {
                 .isNotBlank();
         assertThat(result)
                 .contains(id + " was not found.");
+    }
+
+    @Test
+    void saveStockItem_whenPublisherThrows_catchesExceptionAndReturnsId() throws Exception {
+        StockItemDTO dto = StockItemDTO.builder()
+                .id(UUID.randomUUID().toString())
+                .productId(UUID.randomUUID().toString())
+                .warehouseId(UUID.randomUUID().toString())
+                .quantity(10)
+                .minimumQuantity(2)
+                .build();
+        when(stockItemRepository.save(any(StockItem.class))).thenReturn(
+                StockItemEntity.builder().id(UUID.randomUUID()).quantity(10).minimumQuantity(2).build()
+        );
+        doThrow(new RuntimeException("publisher error")).when(eventPublisher).stockChanged(any(), any());
+
+        assertThatCode(() -> stockItemService.saveStockItem(dto)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void updateStockItem_whenSavedQuantityIsHigherThanInput_usesIncreaseVariationType() {
+        String id = UUID.randomUUID().toString();
+        StockItemDTO stockItemDTO = StockItemDTO.builder()
+                .quantity(5)
+                .minimumQuantity(2)
+                .productId(UUID.randomUUID().toString())
+                .warehouseId(UUID.randomUUID().toString())
+                .build();
+
+        when(stockItemRepository.findById(StockItemId.builder().id(UUID.fromString(id)).build())).thenReturn(
+                Optional.of(StockItem.builder()
+                        .stockItemId(StockItemId.builder().id(UUID.fromString(id)).build())
+                        .productId(ProductId.builder().id(UUID.randomUUID()).build())
+                        .warehouseId(WarehouseId.builder().id(UUID.randomUUID()).build())
+                        .quantity(Quantity.builder().value(2).build())
+                        .minimumQuantityRule(Quantity.builder().value(1).build())
+                        .build())
+        );
+        // entity returns quantity 20 > input quantity 5 → INCREASE branch
+        when(stockItemRepository.save(any(StockItem.class))).thenReturn(
+                StockItemEntity.builder()
+                        .id(UUID.fromString(id))
+                        .productId(ProductEntity.builder().id(UUID.randomUUID()).build())
+                        .warehouseId(WarehouseEntity.builder().id(UUID.randomUUID()).build())
+                        .quantity(20)
+                        .minimumQuantity(stockItemDTO.getMinimumQuantity())
+                        .build()
+        );
+
+        var result = stockItemService.updateStockItem(id, stockItemDTO);
+
+        assertThat(result).contains(id + " succesfully updated");
+    }
+
+    @Test
+    void updateStockItem_whenPublisherThrows_catchesExceptionAndReturnsSuccess() throws Exception {
+        String id = UUID.randomUUID().toString();
+        StockItemDTO stockItemDTO = StockItemDTO.builder()
+                .quantity(20)
+                .minimumQuantity(5)
+                .productId(UUID.randomUUID().toString())
+                .warehouseId(UUID.randomUUID().toString())
+                .build();
+
+        when(stockItemRepository.findById(StockItemId.builder().id(UUID.fromString(id)).build())).thenReturn(
+                Optional.of(StockItem.builder()
+                        .stockItemId(StockItemId.builder().id(UUID.fromString(id)).build())
+                        .productId(ProductId.builder().id(UUID.randomUUID()).build())
+                        .warehouseId(WarehouseId.builder().id(UUID.randomUUID()).build())
+                        .quantity(Quantity.builder().value(10).build())
+                        .minimumQuantityRule(Quantity.builder().value(2).build())
+                        .build())
+        );
+        when(stockItemRepository.save(any(StockItem.class))).thenReturn(
+                StockItemEntity.builder()
+                        .id(UUID.fromString(id))
+                        .productId(ProductEntity.builder().id(UUID.randomUUID()).build())
+                        .warehouseId(WarehouseEntity.builder().id(UUID.randomUUID()).build())
+                        .quantity(stockItemDTO.getQuantity())
+                        .minimumQuantity(stockItemDTO.getMinimumQuantity())
+                        .build()
+        );
+        doThrow(new RuntimeException("publisher error")).when(eventPublisher).stockChanged(any(), any());
+
+        assertThatCode(() -> stockItemService.updateStockItem(id, stockItemDTO)).doesNotThrowAnyException();
     }
 }

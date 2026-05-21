@@ -58,23 +58,17 @@ public class WarehouseServiceImpl implements WarehouseService{
 
         Warehouse warehouse = WarehouseMapperUtils.toDomain(warehouseDTO);
 
-        try {
-            warehouse.recordEvent(new WarehouseCreatedEvent(
-                    warehouse.getWarehouseId().getId().toString(),
-                    warehouse.getWarehouseName(),
-                    warehouse.getWarehouseLocation(),
-                    warehouse.getWarehouseType().name()
-            ));
-            warehouse.getDomainEvents().forEach(eventPublisher::publish);
-            warehouse.clearDomainEvents();
-        }catch (Exception e){
-            log.error(e.getMessage());
-        }
-
       
         WarehouseEntity savedWarehouse = warehouseRepository.save(
                 warehouse
         );
+
+        try {
+            eventPublisher.warehouseRegistered(warehouse);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+
         return "Warehouse saved with id: " + savedWarehouse.getId().toString();
     }
 

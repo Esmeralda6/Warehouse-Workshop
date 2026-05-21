@@ -1,5 +1,6 @@
 package com.gft.warehouse.warehouseworkshop.domain.aggregates;
 
+import com.gft.warehouse.warehouseworkshop.domain.events.StockChangedEvent;
 import com.gft.warehouse.warehouseworkshop.domain.exceptions.InsuficientStockException;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.ProductId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Quantity;
@@ -73,5 +74,25 @@ class StockItemTest {
     void hasProduct_returnsFalseForDifferentProduct() {
         StockItem item = buildItem(UUID.randomUUID(), 5);
         assertThat(item.hasProduct(ProductId.builder().id(UUID.randomUUID()).build())).isFalse();
+    }
+
+    @Test
+    void recordEvent_addsEventToDomainEvents() {
+        StockItem item = buildItem(UUID.randomUUID(), 5);
+        StockChangedEvent event = new StockChangedEvent(UUID.randomUUID().toString(), 5, "INCREASE");
+
+        item.recordEvent(event);
+
+        assertThat(item.getDomainEvents()).hasSize(1).containsExactly(event);
+    }
+
+    @Test
+    void clearDomainEvents_emptiesEventList() {
+        StockItem item = buildItem(UUID.randomUUID(), 5);
+        item.recordEvent(new StockChangedEvent(UUID.randomUUID().toString(), 5, "INCREASE"));
+
+        item.clearDomainEvents();
+
+        assertThat(item.getDomainEvents()).isEmpty();
     }
 }

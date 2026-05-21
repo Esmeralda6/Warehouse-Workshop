@@ -63,14 +63,14 @@ class WarehouseApiE2E {
         assertThat(warehouseJpaRepository.findById(savedId)).isPresent();
     }
 
-    // ─── GET /warehouses/list ────────────────────────────────────────────────────
+    // ─── GET /warehouses ────────────────────────────────────────────────────
 
     @Test
     void getWarehouses_E2E_afterSavingTwo_shouldReturnBothInList() {
         warehouseJpaRepository.save(entity("Alpha", WarehouseType.FACTORY, null));
         warehouseJpaRepository.save(entity("Beta", WarehouseType.PRODUCTION, null));
 
-        ResponseEntity<List> response = restTemplate.getForEntity("/warehouses/list", List.class);
+        ResponseEntity<List> response = restTemplate.getForEntity("/warehouses", List.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).hasSize(2);
@@ -78,7 +78,7 @@ class WarehouseApiE2E {
 
     @Test
     void getWarehouses_E2E_whenDatabaseIsEmpty_shouldReturnEmptyList() {
-        ResponseEntity<List> response = restTemplate.getForEntity("/warehouses/list", List.class);
+        ResponseEntity<List> response = restTemplate.getForEntity("/warehouses", List.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEmpty();

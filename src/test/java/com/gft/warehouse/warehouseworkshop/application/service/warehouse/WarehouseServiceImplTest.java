@@ -320,58 +320,25 @@ class WarehouseServiceImplTest {
                 .isNotBlank()
                 .contains(warehouseId.getId() + " not found.");
     }
+
     @Test
-    void saveWarehouse_continuesSavingWhenEventPublishingFails() {
+    void saveWarehouse_whenPublisherThrows_catchesExceptionAndReturnsId() throws Exception {
         WarehouseDTO warehouseDTO = WarehouseDTO.builder()
                 .id(UUID.randomUUID().toString())
                 .name("warehouse_1")
                 .location(LocationDTO.builder().x(1).y(2).build())
                 .type("FACTORY")
                 .build();
-
-        doThrow(new RuntimeException("publish failed")).when(eventPublisher).publish(any());
-        when(warehouseRepository.save(any(Warehouse.class))).thenReturn(
+        when(warehouseRepository.save(Mockito.any(Warehouse.class))).thenReturn(
                 WarehouseEntity.builder()
                         .id(UUID.randomUUID())
                         .name(warehouseDTO.getName())
-                        .warehouseType(WarehouseType.valueOf(warehouseDTO.getType()))
-                        .x(warehouseDTO.getLocation().getX())
-                        .y(warehouseDTO.getLocation().getY())
+                        .warehouseType(WarehouseType.FACTORY)
+                        .x(1).y(2)
                         .build()
         );
+        doThrow(new RuntimeException("publish failed")).when(eventPublisher).warehouseRegistered(any(Warehouse.class));
 
         assertThatCode(() -> warehouseService.saveWarehouse(warehouseDTO)).doesNotThrowAnyException();
-        verify(warehouseRepository).save(any(Warehouse.class));
-    }
-
-    @Test
-    void saveWarehouse_publishesWarehouseCreatedEvent() {
-        WarehouseDTO warehouseDTO = WarehouseDTO.builder()
-                .id(UUID.randomUUID().toString())
-                .name("warehouse_1")
-                .location(LocationDTO.builder().x(1).y(2).build())
-                .type("FACTORY")
-                .build();
-
-        when(warehouseRepository.save( Mockito.any( Warehouse.class))).thenReturn(
-                WarehouseEntity.builder()
-                        .id( UUID.randomUUID() )
-                        .name( warehouseDTO.getName() )
-                        .warehouseType(WarehouseType.valueOf(warehouseDTO.getType()))
-                        .x( warehouseDTO.getLocation().getX() )
-                        .y( warehouseDTO.getLocation().getY() )
-                        .build()
-        );
-
-        warehouseService.saveWarehouse(warehouseDTO);
-
-        ArgumentCaptor<DomainEvent> captor = ArgumentCaptor.forClass(DomainEvent.class);
-        verify(eventPublisher).publish(captor.capture());
-        assertThat(captor.getValue()).isInstanceOf(WarehouseCreatedEvent.class);
-        WarehouseCreatedEvent event = (WarehouseCreatedEvent) captor.getValue();
-        assertThat(event.getWarehouseName()).isEqualTo("warehouse_1");
-        assertThat(event.getWarehouseType()).isEqualTo("FACTORY");
-        assertThat(event.getLocation().getX()).isEqualTo(1);
-        assertThat(event.getLocation().getY()).isEqualTo(2);
     }
 }

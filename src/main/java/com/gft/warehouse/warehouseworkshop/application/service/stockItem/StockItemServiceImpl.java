@@ -2,6 +2,8 @@ package com.gft.warehouse.warehouseworkshop.application.service.stockItem;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.StockItemDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.StockItem;
+import com.gft.warehouse.warehouseworkshop.domain.enums.StockVariationType;
+import com.gft.warehouse.warehouseworkshop.domain.ports.EventPublisher;
 import com.gft.warehouse.warehouseworkshop.domain.repository.StockItemRepository;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.*;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.StockItemEntity;
@@ -19,6 +21,9 @@ public class StockItemServiceImpl implements StockItemService{
 
     @Autowired
     private StockItemRepository stockItemRepository;
+
+    @Autowired
+    private EventPublisher eventPublisher;
 
     // GET StockItems list
     @Override
@@ -52,23 +57,43 @@ public class StockItemServiceImpl implements StockItemService{
         StockItemEntity savedStockItem = stockItemRepository.save(
                 stockItem
         );
+
+        try {
+            eventPublisher.stockChanged(stockItem, StockVariationType.INCREASE);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+
         return "Stock Item saved with id: " + savedStockItem.getId().toString();
     }
 
     @Override
     public String updateStockItem(String id, StockItemDTO warehouseDTO) {
-        Optional<StockItemDTO> stockItem = stockItemRepository.findById(
-                        StockItemId.builder().id(UUID.fromString(id)).build())
-                .map(updatedStockItem -> {
-                    updatedStockItem.setQuantity(
+        Optional<StockItem> oldStockItem = stockItemRepository.findById(
+                StockItemId.builder().id(UUID.fromString(id)).build());
+        Optional<StockItemDTO> stockItemDTOOptional = oldStockItem
+                .map(stockItem -> {
+                    stockItem.setQuantity(
                             Quantity.builder().value(warehouseDTO.getQuantity()).build()
                     );
-                    updatedStockItem.setMinimumQuantityRule(
+                    stockItem.setMinimumQuantityRule(
                             Quantity.builder().value(warehouseDTO.getMinimumQuantity()).build()
                     );
-                    return StockItemMapperUtils.toDTO( stockItemRepository.save( updatedStockItem ));
+                    return StockItemMapperUtils.toDTO( stockItemRepository.save(stockItem));
                 });
-        if (stockItem.isPresent()){
+        if (stockItemDTOOptional.isPresent()){
+            try {
+                StockItem updatedStockItem = StockItemMapperUtils.toDomain(stockItemDTOOptional.get());
+                StockVariationType variationType =
+                        updatedStockItem.getQuantity().getValue() > oldStockItem.get().getQuantity().getValue() ?
+                        StockVariationType.INCREASE : StockVariationType.DECREASE;
+                eventPublisher.stockChanged(
+                        updatedStockItem
+                        , variationType);
+            }catch (Exception e){
+                log.error(e.getMessage());
+            }
+
             return "Stock item with id " + id + " succesfully updated";
         }
         return "Stock item with id " + id + " not found.";

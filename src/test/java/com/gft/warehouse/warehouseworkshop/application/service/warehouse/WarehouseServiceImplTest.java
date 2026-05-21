@@ -30,9 +30,12 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @ExtendWith(MockitoExtension.class)
 class WarehouseServiceImplTest {
@@ -105,6 +108,12 @@ class WarehouseServiceImplTest {
         return Stream.of(
                 Arguments.of(WarehouseDTO.builder()
                         .id( null )
+                        .name("warehouse_1")
+                        .location(LocationDTO.builder().x(1).y(2).build())
+                        .type("FACTORY")
+                        .build()),
+                Arguments.of(WarehouseDTO.builder()
+                        .id("")
                         .name("warehouse_1")
                         .location(LocationDTO.builder().x(1).y(2).build())
                         .type("FACTORY")
@@ -287,42 +296,28 @@ class WarehouseServiceImplTest {
     @Test
     void assignFactoryIdWhenFound() {
         WarehouseId warehouseId = WarehouseId.builder().id(UUID.randomUUID()).build();
-        FactoryIdDTO factoryId = FactoryIdDTO.builder().factoryId( UUID.randomUUID().toString()  ).build();
-        when( warehouseRepository.findById( warehouseId ) ).thenReturn(
-                Optional.of( Warehouse.builder().warehouseId(warehouseId).build())
-        );
+        FactoryIdDTO factoryId = FactoryIdDTO.builder().factoryId(UUID.randomUUID().toString()).build();
+        when(warehouseRepository.assignFactory(Mockito.any(), Mockito.any())).thenReturn(true);
 
-        when(warehouseRepository.save(Mockito.any( Warehouse.class))).thenReturn(
-                WarehouseEntity.builder()
-                        .id( warehouseId.getId() )
-                        .warehouseType( WarehouseType.FACTORY)
-                        .factoryId( UUID.fromString(factoryId.getFactoryId()) )
-                        .build()
-        );
+        var result = warehouseService.assignFactoryId(warehouseId.getId().toString(), factoryId);
 
-        var result = warehouseService.assignFactoryId( warehouseId.getId().toString(), factoryId);
-
-        assertThat( result )
+        assertThat(result)
                 .isNotNull()
-                .isNotBlank();
-        assertThat( result )
-                .contains( warehouseId.getId() + " succesfully assigned to factory with id " + factoryId);
+                .isNotBlank()
+                .contains(warehouseId.getId() + " succesfully assigned to factory with id " + factoryId);
     }
 
     @Test
     void assignFactoryIdWhenNotFound() {
         WarehouseId warehouseId = WarehouseId.builder().id(UUID.randomUUID()).build();
         FactoryIdDTO factoryId = FactoryIdDTO.builder().factoryId(UUID.randomUUID().toString()).build();
-        when(warehouseRepository.findById(warehouseId)).thenReturn(
-                Optional.empty()
-        );
+        when(warehouseRepository.assignFactory(Mockito.any(), Mockito.any())).thenReturn(false);
 
         var result = warehouseService.assignFactoryId(warehouseId.getId().toString(), factoryId);
 
         assertThat(result)
                 .isNotNull()
-                .isNotBlank();
-        assertThat(result)
+                .isNotBlank()
                 .contains(warehouseId.getId() + " not found.");
     }
 }

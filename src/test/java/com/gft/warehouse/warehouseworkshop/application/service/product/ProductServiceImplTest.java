@@ -82,6 +82,10 @@ class ProductServiceImplTest {
                         .name("product_1")
                         .build()),
                 Arguments.of(ProductDTO.builder()
+                        .id("")
+                        .name("product_1")
+                        .build()),
+                Arguments.of(ProductDTO.builder()
                         .id(UUID.randomUUID().toString())
                         .name("product_1")
                         .build())

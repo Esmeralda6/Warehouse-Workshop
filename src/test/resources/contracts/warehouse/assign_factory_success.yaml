@@ -1,0 +1,11 @@
+description: "PATCH /warehouses/assignFactory/{id} assigns a factory to an existing warehouse"
+request:
+  method: PATCH
+  url: /warehouses/assignFactory/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+  headers:
+    Content-Type: "application/json"
+  body:
+    factoryId: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+response:
+  status: 200
+  body: "Warehouse with id aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa succesfully assigned to factory with id bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"

@@ -1,28 +1,27 @@
 package com.gft.warehouse.warehouseworkshop.domain.valueObject;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 
 class QuantityTest {
 
-    @Test
-    void generateQuantity(){
-        Quantity quantity = Quantity.builder()
-                .value(10)
-                .build();
+    @ParameterizedTest(name = "value={0} is valid")
+    @ValueSource(ints = {0, 1, 10, 100})
+    void shouldCreateQuantityWithValidValue(int value) {
+        Quantity quantity = Quantity.builder().value(value).build();
 
-        assertThat(quantity.getValue()).isGreaterThanOrEqualTo(0);
+        assertThat(quantity.getValue()).isEqualTo(value);
     }
 
-    @Test
-    void shouldThrowExceptionWhenValueIsNegative() {
-        assertThatThrownBy(() -> Quantity.builder().value(-1).build())
+    @ParameterizedTest(name = "value={0} throws exception")
+    @ValueSource(ints = {-1, -10, Integer.MIN_VALUE})
+    void shouldThrowExceptionWhenValueIsNegative(int value) {
+        assertThatThrownBy(() -> Quantity.builder().value(value).build())
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("The quantity can't be negative.");
     }
 }
-
-

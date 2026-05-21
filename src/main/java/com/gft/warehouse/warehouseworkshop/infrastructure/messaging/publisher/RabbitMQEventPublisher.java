@@ -1,17 +1,24 @@
 package com.gft.warehouse.warehouseworkshop.infrastructure.messaging.publisher;
 
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Product;
+import com.gft.warehouse.warehouseworkshop.application.dto.ItemRequestDTO;
+import com.gft.warehouse.warehouseworkshop.application.dto.ShipmentRequestDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.StockItem;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
 import com.gft.warehouse.warehouseworkshop.domain.enums.StockVariationType;
 import com.gft.warehouse.warehouseworkshop.domain.events.DomainEvent;
 import com.gft.warehouse.warehouseworkshop.domain.events.ProductChangedEvent;
+import com.gft.warehouse.warehouseworkshop.domain.events.ShipmentRequestedEvent;
 import com.gft.warehouse.warehouseworkshop.domain.events.StockChangedEvent;
 import com.gft.warehouse.warehouseworkshop.domain.events.WarehouseCreatedEvent;
 import com.gft.warehouse.warehouseworkshop.domain.ports.EventPublisher;
 import com.gft.warehouse.warehouseworkshop.infrastructure.messaging.config.RabbitMQConfig;
+import com.gft.warehouse.warehouseworkshop.infrastructure.messaging.time.CurrentDayHolder;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.UUID;
 
 @Component
 public class RabbitMQEventPublisher implements EventPublisher {
@@ -59,5 +66,32 @@ public class RabbitMQEventPublisher implements EventPublisher {
         ));
         product.getDomainEvents().forEach(this::publish);
         product.clearDomainEvents();
+    }
+
+    @Override
+    public void shipmentRequested(Warehouse warehosueDestination, ShipmentRequestDTO shipmentRequestDTO) throws Exception{
+        int currentDay = CurrentDayHolder.getCurrentDay();
+
+        // This should be its own persistant entity, not saved for now
+        String shipmentId = shipmentRequestDTO.getShipmentId() != null
+                ? shipmentRequestDTO.getShipmentId().toString()
+                : UUID.randomUUID().toString();
+
+        warehosueDestination.recordEvent(
+                new ShipmentRequestedEvent(
+                        shipmentId,
+                        shipmentRequestDTO.getOriginId(),
+                        shipmentRequestDTO.getDestinationId(),
+                        shipmentRequestDTO.getItems().stream().map(this::itemMapper).toList(),
+                        currentDay
+                )
+        );
+    }
+
+    private ShipmentRequestedEvent.Item itemMapper(ItemRequestDTO itemRequestDTO){
+        return new ShipmentRequestedEvent.Item(
+                itemRequestDTO.getMaterialType(),
+                itemRequestDTO.getQuantity()
+        );
     }
 }

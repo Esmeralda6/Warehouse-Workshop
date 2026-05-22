@@ -12,8 +12,8 @@ class ProductChangedEventTest {
     void constructor_setsAllFields() {
         ProductChangedEvent event = new ProductChangedEvent("prod-1", "Wheel");
 
-        assertThat(event.getProductId()).isEqualTo("prod-1");
-        assertThat(event.getProductName()).isEqualTo("Wheel");
+        assertThat(event.getProduct().getProductId()).isEqualTo("prod-1");
+        assertThat(event.getProduct().getProdutName()).isEqualTo("Wheel");
     }
 
     @Test

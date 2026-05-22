@@ -39,6 +39,8 @@ public class RabbitMQConfig {
 
     public static final String ROUTING_KEY_PRODUCT_ORDER_BLOCKED         = "product.order.blocked.v1";
 
+    public static final String ROUTING_KEY_PRODUCT_CATALOGUE_UPDATE         = "product.catalogue.update.v1";
+
     @Bean
     TopicExchange warehouseExchange() {
         return new TopicExchange(EXCHANGE);

@@ -7,8 +7,10 @@ import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.Pro
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.StockItemEntity;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository.ProductJpaRepository;
+import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository.ProductRepositoryAdapter;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository.WarehouseJpaRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 

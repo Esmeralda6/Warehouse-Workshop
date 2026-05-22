@@ -1,5 +1,7 @@
 package com.gft.warehouse.warehouseworkshop.application.service.stockItem;
 
+import com.gft.warehouse.warehouseworkshop.application.dto.ItemRequestDTO;
+import com.gft.warehouse.warehouseworkshop.application.dto.ShipmentRequestDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.StockItemDTO;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.StockItem;
 import com.gft.warehouse.warehouseworkshop.domain.enums.StockVariationType;
@@ -110,5 +112,4 @@ public class StockItemServiceImpl implements StockItemService{
         }
         return "Stock item with id " + id + " was not found.";
     }
-
 }

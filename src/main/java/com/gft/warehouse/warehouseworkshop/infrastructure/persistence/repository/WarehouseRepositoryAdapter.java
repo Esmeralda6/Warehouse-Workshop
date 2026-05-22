@@ -19,6 +19,8 @@ public class WarehouseRepositoryAdapter implements WarehouseRepository {
 
     private final WarehouseJpaRepository warehouseJpaRepository;
 
+    private final ProductJpaRepository productJpaRepository;
+
     @Override
     public List<Warehouse> findAll() {
         return warehouseJpaRepository.findAll()
@@ -36,7 +38,7 @@ public class WarehouseRepositoryAdapter implements WarehouseRepository {
     @Override
     public WarehouseEntity save(Warehouse warehouse) {
         return warehouseJpaRepository.save(
-                WarehouseMapperUtils.toEntity( warehouse )
+                WarehouseMapperUtils.toEntity( warehouse, warehouseJpaRepository, productJpaRepository )
         );
     }
 

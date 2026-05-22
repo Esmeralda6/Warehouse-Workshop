@@ -1,5 +1,6 @@
 package com.gft.warehouse.warehouseworkshop.application.service.warehouse;
 
+import com.gft.warehouse.warehouseworkshop.application.dto.DeliveryCompletedDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.FactoryIdDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.ShipmentRequestDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
@@ -164,5 +165,11 @@ public class WarehouseServiceImpl implements WarehouseService{
         return shipmentRequestDTO;
     }
 
+    public DeliveryCompletedDTO materialsRequested(DeliveryCompletedDTO deliveryCompletedDTO){
+
+
+
+        return deliveryCompletedDTO;
+    }
 
 }

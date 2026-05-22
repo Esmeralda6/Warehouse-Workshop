@@ -2,12 +2,15 @@ package com.gft.warehouse.warehouseworkshop.application.service.warehouse;
 
 import com.gft.warehouse.warehouseworkshop.application.dto.LocationDTO;
 import com.gft.warehouse.warehouseworkshop.application.dto.WarehouseDTO;
+import com.gft.warehouse.warehouseworkshop.application.service.stockItem.StockItemMapperUtils;
 import com.gft.warehouse.warehouseworkshop.domain.aggregates.Warehouse;
 import com.gft.warehouse.warehouseworkshop.domain.enums.WarehouseType;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.FactoryId;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.Location;
 import com.gft.warehouse.warehouseworkshop.domain.valueObject.WarehouseId;
 import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.entity.WarehouseEntity;
+import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository.ProductJpaRepository;
+import com.gft.warehouse.warehouseworkshop.infrastructure.persistence.repository.WarehouseJpaRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
@@ -86,9 +89,13 @@ public abstract class WarehouseMapperUtils {
                                 .id( entity.getFactoryId() )
                                 .build()
                 )
+                .stock(
+                        entity.getStockItems().stream().map(StockItemMapperUtils::toDomain).toList()
+                )
                 .build();
     }
 
+    //Without parsing stock items
     public static WarehouseEntity toEntity(Warehouse warehouse){
         return WarehouseEntity.builder()
                 .id( warehouse.getWarehouseId().getId() )
@@ -97,6 +104,21 @@ public abstract class WarehouseMapperUtils {
                 .x( warehouse.getWarehouseLocation().getX() )
                 .y( warehouse.getWarehouseLocation().getY() )
                 .factoryId( warehouse.getFactoryId().getId() )
+                .build();
+    }
+
+    //Properly parsing stock items
+    public static WarehouseEntity toEntity(Warehouse warehouse, WarehouseJpaRepository warehouseJpaRepository, ProductJpaRepository productJpaRepository){
+        return WarehouseEntity.builder()
+                .id( warehouse.getWarehouseId().getId() )
+                .name( warehouse.getWarehouseName() )
+                .warehouseType( warehouse.getWarehouseType())
+                .x( warehouse.getWarehouseLocation().getX() )
+                .y( warehouse.getWarehouseLocation().getY() )
+                .factoryId( warehouse.getFactoryId().getId() )
+                .stockItems(
+                        warehouse.getStock().stream().map( stockItem -> StockItemMapperUtils.toEntity(stockItem, productJpaRepository, warehouseJpaRepository) ).toList()
+                )
                 .build();
     }
 
